@@ -427,21 +427,53 @@ function setConnUI(){
   const b=$("btConn"); const on=!!(BT.ch && BT.device && BT.device.gatt.connected);
   b.classList.toggle("on", on); b.textContent = on ? "● "+(BT.device.name||"Verbunden") : "Drucker verbinden";
 }
+const U = n => "0000"+n+"-0000-1000-8000-00805f9b34fb";
+const SVC = [U("ff00"), U("fee7"), U("ae30"), U("18f0"), "49535343-fe7d-4ae5-8fa9-9fafd205e455", "e7810a71-73ae-499d-8c15-faa9aef0c3f2"];
+const NAME_PREFIXES = ["M110","M120","M220","M02","Mr.in","Q","P","T0","M1","M2","Phomemo"];
+function errText(e){ if(!e) return "unbekannt"; return [e.name, e.message, e.code].filter(x=>x!==undefined&&x!==""&&x!=="Error").join(" / ") || String(e); }
+function isCancel(e){ return e && (e.name==="NotFoundError" || /cancel|abgebrochen|chosen/i.test(e.message||"")); }
+async function pickDevice(){
+  // Variante 1: Liste aller Geräte (Chrome); Variante 2: gefiltert nach Namen/Diensten (für Bluefy)
+  const opts = [
+    { acceptAllDevices:true, optionalServices:SVC },
+    { filters:[...NAME_PREFIXES.map(p=>({namePrefix:p})), {services:[U("ff00")]}], optionalServices:SVC },
+    { filters:NAME_PREFIXES.map(p=>({namePrefix:p})), optionalServices:SVC }
+  ];
+  let last;
+  for(const o of opts){
+    try{ return await navigator.bluetooth.requestDevice(o); }
+    catch(e){ last=e; if(isCancel(e)) throw e; console.warn("requestDevice", errText(e)); }
+  }
+  throw last;
+}
+async function findWriteChar(server){
+  try{ const s=await server.getPrimaryService(U("ff00")); return await s.getCharacteristic(U("ff02")); }catch(e){}
+  // Fallback: ersten beschreibbaren Kanal suchen
+  const svcs = await server.getPrimaryServices();
+  for(const s of svcs){
+    let chs=[]; try{ chs=await s.getCharacteristics(); }catch(e){ continue; }
+    const w = chs.find(c=>c.properties.writeWithoutResponse) || chs.find(c=>c.properties.write);
+    if(w) return w;
+  }
+  throw new Error("Kein Druckkanal gefunden");
+}
 async function connect(){
   if(!btSupported()){ toast("Dieser Browser kann kein Bluetooth – siehe Hinweis", 3500); showTab("home"); return false; }
+  let step="Suche";
   try{
-    const dev = await navigator.bluetooth.requestDevice({ acceptAllDevices:true, optionalServices:[0xff00] });
+    const dev = await pickDevice();
+    step="Verbinden mit "+(dev.name||"Gerät");
     dev.addEventListener("gattserverdisconnected", ()=>{ BT.ch=null; setConnUI(); });
     const server = await dev.gatt.connect();
-    const svc = await server.getPrimaryService(0xff00);
-    BT.ch = await svc.getCharacteristic(0xff02);
+    step="Druckkanal";
+    BT.ch = await findWriteChar(server);
     BT.device = dev; setConnUI(); toast("Verbunden mit "+(dev.name||"Drucker"));
     return true;
-  }catch(e){ if(e && e.name!=="NotFoundError") toast("Verbindung fehlgeschlagen: "+(e.message||e), 4000); setConnUI(); return false; }
+  }catch(e){ if(!isCancel(e)) toast("Fehler bei „"+step+"“: "+errText(e), 6000); setConnUI(); return false; }
 }
 async function ensureConn(){
   if(BT.ch && BT.device && BT.device.gatt.connected) return true;
-  if(BT.device){ try{ const s=await BT.device.gatt.connect(); BT.ch=await (await s.getPrimaryService(0xff00)).getCharacteristic(0xff02); setConnUI(); return true; }catch(e){} }
+  if(BT.device){ try{ const s=await BT.device.gatt.connect(); BT.ch=await findWriteChar(s); setConnUI(); return true; }catch(e){} }
   return connect();
 }
 async function send(bytes){
