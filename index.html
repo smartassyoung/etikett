@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Etikett – M110</title>
+<style>
+:root{--bg:#f4f2ee;--card:#fff;--ink:#1d1d1f;--mute:#6e6e73;--line:#e3e0da;--acc:#1f5f4a;--acc2:#e8f0ec;--warn:#b3261e;--r:14px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font:16px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);padding-bottom:env(safe-area-inset-bottom)}
+header{position:sticky;top:0;z-index:5;background:var(--bg);padding:calc(10px + env(safe-area-inset-top)) 16px 8px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line)}
+header h1{font-size:19px;margin:0;flex:1}
+.pill{border:0;border-radius:999px;padding:8px 14px;font:inherit;font-size:14px;font-weight:600;background:#fff;color:var(--ink);box-shadow:0 0 0 1px var(--line)}
+.pill.on{background:var(--acc);color:#fff;box-shadow:none}
+nav{display:flex;gap:6px;padding:10px 16px;overflow-x:auto}
+nav button{flex:0 0 auto;border:0;background:transparent;font:inherit;font-weight:600;color:var(--mute);padding:8px 12px;border-radius:10px}
+nav button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+main{max-width:980px;margin:0 auto;padding:0 16px 120px}
+.grid{display:grid;gap:16px}
+@media(min-width:760px){.grid.two{grid-template-columns:1fr 1fr;align-items:start}}
+.card{background:var(--card);border-radius:var(--r);padding:16px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.card h2{font-size:15px;margin:0 0 12px;color:var(--mute);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+label{display:block;font-size:14px;color:var(--mute);margin:12px 0 4px}
+input[type=text],input[type=number],textarea,select{width:100%;font:inherit;font-size:17px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
+textarea{min-height:90px;resize:vertical}
+input[type=range]{width:100%}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.seg{display:flex;background:var(--bg);border-radius:10px;padding:3px;gap:3px;flex-wrap:wrap}
+.seg button{flex:1;border:0;background:transparent;font:inherit;font-size:14px;font-weight:600;padding:8px 10px;border-radius:8px;color:var(--mute);min-width:60px}
+.seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.1)}
+.chk{display:flex;align-items:center;gap:8px;font-size:15px;color:var(--ink);margin:10px 0 0}
+.chk input{width:20px;height:20px}
+.allerg{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:6px;margin-top:6px}
+.allerg button{border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px;font:inherit;font-size:14px;text-align:left}
+.allerg button.on{background:var(--acc2);border-color:var(--acc);color:var(--acc);font-weight:600}
+.allerg b{display:inline-block;width:18px}
+.btn{border:0;border-radius:12px;padding:12px 16px;font:inherit;font-weight:600;background:var(--acc2);color:var(--acc)}
+.btn.main{background:var(--acc);color:#fff}
+.btn.ghost{background:#fff;box-shadow:0 0 0 1px var(--line);color:var(--ink)}
+.btn.del{background:#fbeceb;color:var(--warn)}
+.btn:disabled{opacity:.45}
+.preview{display:flex;justify-content:center;align-items:center;background:repeating-conic-gradient(#ebe8e2 0 25%,#f4f2ee 0 50%) 0 0/16px 16px;border-radius:10px;padding:18px;min-height:180px}
+.preview canvas{background:#fff;border-radius:6px;box-shadow:0 2px 10px rgba(0,0,0,.15);image-rendering:pixelated;max-width:100%;max-height:420px}
+.meta{font-size:13px;color:var(--mute);text-align:center;margin-top:8px}
+.tpls{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.tpl{background:var(--card);border-radius:var(--r);padding:10px;box-shadow:0 1px 2px rgba(0,0,0,.06);display:flex;flex-direction:column;gap:8px}
+.tpl .thumb{display:flex;align-items:center;justify-content:center;height:110px;background:var(--bg);border-radius:8px}
+.tpl canvas{max-width:92%;max-height:96px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.15);image-rendering:pixelated}
+.tpl .nm{font-weight:600;font-size:15px;line-height:1.2}
+.tpl .sub{font-size:12px;color:var(--mute)}
+.tpl .acts{display:flex;gap:6px}
+.tpl .acts .btn{flex:1;padding:9px 6px;font-size:14px}
+.empty{color:var(--mute);text-align:center;padding:30px 10px}
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:6;background:rgba(244,242,238,.95);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-top:1px solid var(--line);padding:10px 16px calc(10px + env(safe-area-inset-bottom))}
+.bar .in{max-width:980px;margin:0 auto;display:flex;gap:8px;align-items:center}
+.bar .in .btn.main{flex:1;font-size:17px;padding:14px}
+.qty{display:flex;align-items:center;background:#fff;border-radius:12px;box-shadow:0 0 0 1px var(--line)}
+.qty button{border:0;background:transparent;font-size:22px;width:40px;height:46px;color:var(--acc)}
+.qty span{min-width:26px;text-align:center;font-weight:700}
+#toast{position:fixed;left:50%;top:calc(70px + env(safe-area-inset-top));transform:translateX(-50%);background:#1d1d1f;color:#fff;padding:10px 16px;border-radius:12px;font-size:15px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:20;max-width:90vw;text-align:center}
+#toast.show{opacity:1}
+.hint{font-size:14px;color:var(--mute);background:var(--acc2);border-radius:10px;padding:10px 12px;margin-top:10px}
+.hint.warn{background:#fdf3e1;color:#7a4b00}
+.hide{display:none!important}
+.small{font-size:13px;color:var(--mute)}
+dialog{border:0;border-radius:16px;padding:20px;max-width:360px;width:90vw}
+dialog::backdrop{background:rgba(0,0,0,.35)}
+</style>
+</head>
+<body>
+<header>
+  <h1>Etikett</h1>
+  <button id="btConn" class="pill">Drucker verbinden</button>
+</header>
+<nav id="tabs">
+  <button data-tab="home" class="on">Vorlagen</button>
+  <button data-tab="edit">Neu / Bearbeiten</button>
+  <button data-tab="settings">Einstellungen</button>
+</nav>
+
+<main>
+  <!-- VORLAGEN -->
+  <section id="tab-home">
+    <div id="noBt" class="hint warn hide"></div>
+    <div id="tplList" class="tpls" style="margin-top:12px"></div>
+    <div id="tplEmpty" class="empty hide">Noch keine Vorlagen.<br>Unter „Neu / Bearbeiten“ ein Etikett gestalten und speichern – danach druckst du es hier mit einem Tipp.</div>
+  </section>
+
+  <!-- EDITOR -->
+  <section id="tab-edit" class="hide">
+    <div class="grid two">
+      <div class="grid">
+        <div class="card">
+          <h2>Art & Größe</h2>
+          <div class="seg" id="segType">
+            <button data-v="text" class="on">Text</button>
+            <button data-v="food">Lebensmittel</button>
+            <button data-v="image">Bild / Logo</button>
+          </div>
+          <label>Etikett (Breite × Höhe)</label>
+          <div class="seg" id="segSize">
+            <button data-v="40x30" class="on">40×30</button>
+            <button data-v="50x20">50×20</button>
+            <button data-v="50x80">50×80</button>
+            <button data-v="custom">Andere</button>
+          </div>
+          <div id="customSize" class="row hide" style="margin-top:8px">
+            <input type="number" id="cW" min="10" max="50" value="40" style="flex:1" inputmode="numeric"> <span>×</span>
+            <input type="number" id="cH" min="10" max="150" value="30" style="flex:1" inputmode="numeric"> <span>mm</span>
+          </div>
+        </div>
+
+        <!-- TEXT -->
+        <div class="card" id="fText">
+          <h2>Text</h2>
+          <label>Zeilen (jede Zeile wird automatisch so groß wie möglich)</label>
+          <textarea id="tText" placeholder="z. B.&#10;Gewürze&#10;Oregano">Jora</textarea>
+          <label>Ausrichtung</label>
+          <div class="seg" id="segAlign">
+            <button data-v="left">Links</button><button data-v="center" class="on">Mitte</button><button data-v="right">Rechts</button>
+          </div>
+          <label class="chk"><input type="checkbox" id="tBold" checked> Fett</label>
+          <label class="chk"><input type="checkbox" id="tFirstBig" checked> Erste Zeile größer</label>
+          <label class="chk"><input type="checkbox" id="tBorder"> Rahmen</label>
+        </div>
+
+        <!-- FOOD -->
+        <div class="card hide" id="fFood">
+          <h2>Lebensmittel</h2>
+          <label>Produkt</label>
+          <input type="text" id="fName" value="Tomatensauce">
+          <label>Zubereitet</label>
+          <div class="seg" id="segMade">
+            <button data-v="0" class="on">Heute</button><button data-v="-1">Gestern</button><button data-v="none">Ausblenden</button>
+          </div>
+          <label>Haltbar bis (Tage ab Zubereitung)</label>
+          <div class="seg" id="segShelf">
+            <button data-v="1">+1</button><button data-v="2">+2</button><button data-v="3" class="on">+3</button><button data-v="5">+5</button><button data-v="7">+7</button><button data-v="14">+14</button><button data-v="30">+30</button>
+          </div>
+          <div class="row" style="margin-top:8px"><span class="small">oder genau:</span><input type="number" id="fShelf" value="3" min="0" max="365" style="width:90px" inputmode="numeric"><span class="small">Tage</span></div>
+          <label>Bezeichnung</label>
+          <div class="seg" id="segShelfLbl">
+            <button data-v="Verbrauchen bis" class="on">Verbrauchen bis</button><button data-v="Haltbar bis">Haltbar bis</button><button data-v="Aufgetaut am">Aufgetaut am</button>
+          </div>
+          <label>Allergene</label>
+          <div class="allerg" id="allerg"></div>
+          <label>Zusatz (z. B. Kürzel, Lagerung)</label>
+          <input type="text" id="fExtra" placeholder="z. B. MH · gekühlt lagern">
+          <label class="chk"><input type="checkbox" id="fTime"> Uhrzeit mitdrucken</label>
+          <label class="chk"><input type="checkbox" id="fBorder"> Rahmen</label>
+          <div class="hint">Die Daten in gespeicherten Lebensmittel-Vorlagen werden <b>beim Drucken immer neu berechnet</b> – „Heute +3“ bleibt also immer aktuell.</div>
+        </div>
+
+        <!-- IMAGE -->
+        <div class="card hide" id="fImage">
+          <h2>Bild / Logo</h2>
+          <input type="file" id="iFile" accept="image/*" class="hide">
+          <button class="btn ghost" id="iPick" style="width:100%">Bild auswählen …</button>
+          <label>Helligkeit</label>
+          <input type="range" id="iBright" min="-100" max="100" value="0">
+          <label>Kontrast</label>
+          <input type="range" id="iContrast" min="-100" max="100" value="20">
+          <label>Darstellung</label>
+          <div class="seg" id="segDither">
+            <button data-v="dither" class="on">Foto (Raster)</button><button data-v="threshold">Logo (scharf)</button>
+          </div>
+          <label class="chk"><input type="checkbox" id="iInvert"> Invertieren</label>
+          <label>Text darunter (optional)</label>
+          <input type="text" id="iCaption" placeholder="z. B. Restaurant Jora">
+        </div>
+      </div>
+
+      <div class="grid" style="position:sticky;top:120px">
+        <div class="card">
+          <h2>Vorschau (so wird gedruckt)</h2>
+          <div class="preview"><canvas id="cv"></canvas></div>
+          <div class="meta" id="meta"></div>
+        </div>
+        <div class="card">
+          <h2>Als Vorlage speichern</h2>
+          <input type="text" id="tplName" placeholder="Name der Vorlage">
+          <div class="row" style="margin-top:10px">
+            <button class="btn main" id="btSave" style="flex:1">Speichern</button>
+            <button class="btn ghost" id="btNew">Neu</button>
+          </div>
+          <div class="small" id="editInfo" style="margin-top:8px"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SETTINGS -->
+  <section id="tab-settings" class="hide">
+    <div class="grid two">
+      <div class="card">
+        <h2>Druck</h2>
+        <label>Schwärze (Druckdichte): <b id="vDens">10</b></label>
+        <input type="range" id="sDens" min="1" max="15" value="10">
+        <label>Geschwindigkeit: <b id="vSpeed">3</b> <span class="small">(langsamer = sauberer)</span></label>
+        <input type="range" id="sSpeed" min="1" max="5" value="3">
+        <label>Papier</label>
+        <div class="seg" id="segMedia">
+          <button data-v="10" class="on">Etiketten mit Lücke</button><button data-v="11">Endlos</button><button data-v="38">Schwarze Markierung</button>
+        </div>
+        <label>Horizontal verschieben: <b id="vOffX">0</b> mm</label>
+        <input type="range" id="sOffX" min="-6" max="6" step="0.5" value="0">
+        <div class="small">Falls der Druck nicht mittig auf dem Etikett sitzt.</div>
+      </div>
+      <div class="card">
+        <h2>Übertragung</h2>
+        <label>Paketgröße: <b id="vChunk">128</b> Byte</label>
+        <input type="range" id="sChunk" min="20" max="240" step="4" value="128">
+        <label>Pause zwischen Paketen: <b id="vDelay">20</b> ms</label>
+        <input type="range" id="sDelay" min="0" max="80" step="2" value="20">
+        <div class="small">Wenn Ausdrucke abgeschnitten oder verzerrt sind: Paketgröße kleiner, Pause größer.</div>
+      </div>
+      <div class="card">
+        <h2>Vorlagen sichern / übertragen</h2>
+        <div class="small">Vorlagen liegen nur in diesem Browser. Zum Übertragen aufs iPad/iPhone exportieren und dort importieren.</div>
+        <div class="row" style="margin-top:10px">
+          <button class="btn ghost" id="btExport" style="flex:1">Exportieren</button>
+          <button class="btn ghost" id="btImport" style="flex:1">Importieren</button>
+          <input type="file" id="impFile" accept=".json,application/json" class="hide">
+        </div>
+      </div>
+      <div class="card">
+        <h2>Hilfe</h2>
+        <div class="small">
+          <b>iPhone/iPad:</b> Safari kann kein Bluetooth. Diese Seite in der kostenlosen App <b>„Bluefy – Web BLE Browser“</b> öffnen.<br><br>
+          <b>Mac/PC/Android:</b> In Chrome oder Edge öffnen.<br><br>
+          Beim Verbinden den Drucker auswählen (meist „M110“ o. ä.). Die Original-App vorher schließen, sonst ist der Drucker belegt.
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="bar" id="printBar">
+  <div class="in">
+    <div class="qty"><button id="qMinus">−</button><span id="qVal">1</span><button id="qPlus">+</button></div>
+    <button class="btn main" id="btPrint">Drucken</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<dialog id="dlgPrint">
+  <div style="font-weight:700;font-size:18px" id="dpName"></div>
+  <div style="display:flex;justify-content:center;margin:14px 0;background:var(--bg);border-radius:10px;padding:14px"><canvas id="dpCv" style="max-width:100%;max-height:260px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.15);image-rendering:pixelated"></canvas></div>
+  <div class="row" style="justify-content:space-between">
+    <div class="qty"><button id="dpMinus">−</button><span id="dpQty">1</span><button id="dpPlus">+</button></div>
+    <button class="btn ghost" id="dpCancel">Abbrechen</button>
+    <button class="btn main" id="dpGo">Drucken</button>
+  </div>
+</dialog>
+
+<script>
+"use strict";
+/* ---------- Konstanten ---------- */
+const DPM = 8;            // Punkte pro mm (203 dpi)
+const HEAD = 384;         // Druckkopf-Breite in Punkten (48 mm)
+const ALLERGENS = [["A","Gluten"],["B","Krebstiere"],["C","Ei"],["D","Fisch"],["E","Erdnuss"],["F","Soja"],["G","Milch"],["H","Schalenfrüchte"],["L","Sellerie"],["M","Senf"],["N","Sesam"],["O","Sulfite"],["P","Lupinen"],["R","Weichtiere"]];
+const FONT = '-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif';
+const WD = ["So","Mo","Di","Mi","Do","Fr","Sa"];
+
+/* ---------- Speicher ---------- */
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); return true; }catch(e){ toast("Speichern im Browser nicht möglich"); return false; } }
+};
+let templates = store.get("m110.templates", []);
+let settings = Object.assign({dens:10, speed:3, media:10, offX:0, chunk:128, delay:20}, store.get("m110.settings", {}));
+
+/* ---------- Helfer ---------- */
+const $ = id => document.getElementById(id);
+function toast(t, ms=2200){ const el=$("toast"); el.textContent=t; el.classList.add("show"); clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove("show"), ms); }
+function seg(id, onChange){
+  const el=$(id);
+  el.addEventListener("click", e=>{ const b=e.target.closest("button"); if(!b) return; setSeg(id,b.dataset.v); onChange && onChange(b.dataset.v); });
+}
+function setSeg(id, v){ [...$(id).children].forEach(b=>b.classList.toggle("on", b.dataset.v==String(v))); }
+function getSeg(id){ const b=$(id).querySelector(".on"); return b ? b.dataset.v : null; }
+function fmtDate(d, time){ const s = WD[d.getDay()]+" "+String(d.getDate()).padStart(2,"0")+"."+String(d.getMonth()+1).padStart(2,"0")+"."+d.getFullYear(); return time ? s+" "+String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0") : s; }
+function addDays(d,n){ const x=new Date(d); x.setDate(x.getDate()+n); return x; }
+const sleep = ms => new Promise(r=>setTimeout(r,ms));
+
+/* ---------- Editor-Zustand ---------- */
+function defaultState(){
+  return { id:null, name:"", type:"text", size:"40x30", cw:40, ch:30,
+    text:{ text:"Jora", align:"center", bold:true, firstBig:true, border:false },
+    food:{ name:"Tomatensauce", made:"0", shelf:3, shelfLbl:"Verbrauchen bis", allergens:[], extra:"", time:false, border:false },
+    image:{ data:null, bright:0, contrast:20, mode:"dither", invert:false, caption:"" } };
+}
+let S = defaultState();
+const imgCache = new Map();
+function loadImg(src){ if(!src) return Promise.resolve(null); if(imgCache.has(src)) return Promise.resolve(imgCache.get(src));
+  return new Promise(res=>{ const i=new Image(); i.onload=()=>{imgCache.set(src,i);res(i)}; i.onerror=()=>res(null); i.src=src; }); }
+
+function dims(st){ if(st.size==="custom") return [Math.max(10,Math.min(50,+st.cw||40)), Math.max(10,Math.min(150,+st.ch||30))]; const [w,h]=st.size.split("x").map(Number); return [w,h]; }
+
+/* ---------- Rendering ---------- */
+// Zeichnet Zeilen so groß wie möglich in eine Box. lines: [{t, w(Gewicht), b(fett)}]
+function fitLines(ctx, lines, x, y, w, h, align, dry){
+  lines = lines.filter(l=>l.t!=="" || l.keep);
+  if(!lines.length) return 0;
+  const gap = 0.18;
+  let lo=4, hi=400;
+  const measure = s => {
+    let total=0, ok=true;
+    for(const l of lines){ const fs=s*l.w; ctx.font=(l.b?"700 ":"400 ")+fs+"px "+FONT; if(ctx.measureText(l.t).width>w) ok=false; total+=fs; }
+    total += s*gap*(lines.length-1);
+    return ok && total<=h;
+  };
+  for(let i=0;i<22;i++){ const m=(lo+hi)/2; if(measure(m)) lo=m; else hi=m; }
+  const s=lo;
+  if(dry) return s;
+  let total=lines.reduce((a,l)=>a+s*l.w,0)+s*gap*(lines.length-1);
+  let cy = y + (h-total)/2;
+  ctx.fillStyle="#000"; ctx.textBaseline="top";
+  for(const l of lines){
+    const fs=s*l.w; ctx.font=(l.b?"700 ":"400 ")+fs+"px "+FONT;
+    const tw=ctx.measureText(l.t).width;
+    const tx = align==="left"? x : align==="right"? x+w-tw : x+(w-tw)/2;
+    ctx.fillText(l.t, tx, cy + fs*0.06);
+    cy += fs + s*gap;
+  }
+}
+
+function toMono(canvas, mode, bright=0, contrast=0, invert=false){
+  const ctx=canvas.getContext("2d"); const W=canvas.width,H=canvas.height;
+  const id=ctx.getImageData(0,0,W,H), d=id.data;
+  const g=new Float32Array(W*H);
+  const c=(259*(contrast+255))/(255*(259-contrast));
+  for(let i=0;i<W*H;i++){
+    const a=d[i*4+3]/255;
+    let v=(0.299*d[i*4]+0.587*d[i*4+1]+0.114*d[i*4+2])*a+255*(1-a);
+    v=c*(v-128)+128+bright*1.28;
+    if(invert) v=255-v;
+    g[i]=v;
+  }
+  for(let yy=0;yy<H;yy++) for(let xx=0;xx<W;xx++){
+    const i=yy*W+xx, o=g[i], n=o<128?0:255, e=o-n; g[i]=n;
+    if(mode==="dither"){
+      if(xx+1<W) g[i+1]+=e*7/16;
+      if(yy+1<H){ if(xx>0) g[i+W-1]+=e*3/16; g[i+W]+=e*5/16; if(xx+1<W) g[i+W+1]+=e/16; }
+    }
+  }
+  for(let i=0;i<W*H;i++){ const v=g[i]<128?0:255; d[i*4]=d[i*4+1]=d[i*4+2]=v; d[i*4+3]=255; }
+  ctx.putImageData(id,0,0);
+}
+
+async function renderLabel(st, canvas, now=new Date()){
+  const [wmm,hmm]=dims(st); const W=Math.round(wmm*DPM), H=Math.round(hmm*DPM);
+  canvas.width=W; canvas.height=H;
+  const ctx=canvas.getContext("2d");
+  ctx.fillStyle="#fff"; ctx.fillRect(0,0,W,H);
+  const m = Math.round(Math.min(W,H)*0.07)+4;
+  let border=false;
+
+  if(st.type==="text"){
+    const t=st.text; border=t.border;
+    const raw=(t.text||"").split("\n").map(s=>s.trim()).filter(s=>s!=="");
+    const lines=raw.map((s,i)=>({t:s, w:(t.firstBig&&raw.length>1&&i===0)?1.6:1, b:t.bold}));
+    fitLines(ctx, lines, m, m, W-2*m, H-2*m, t.align);
+    toMono(canvas,"threshold");
+  }
+  else if(st.type==="food"){
+    const f=st.food; border=f.border;
+    const made = f.made==="none" ? null : addDays(now, +f.made);
+    const until = addDays(made||now, +f.shelf||0);
+    // zwei Layouts probieren (Bezeichnung + Datum in einer Zeile oder getrennt) und das größere nehmen
+    const build = split => {
+      const L=[];
+      if(f.name) L.push({t:f.name, w:1.7, b:true});
+      const md = made ? fmtDate(made, f.time && f.made==="0") : null;
+      if(split){
+        if(md){ L.push({t:"Zubereitet:", w:0.85, b:false}); L.push({t:md, w:1, b:false}); }
+        L.push({t:f.shelfLbl+":", w:0.85, b:false}); L.push({t:fmtDate(until), w:1.3, b:true});
+      } else {
+        if(md) L.push({t:"Zubereitet: "+md, w:1, b:false});
+        L.push({t:f.shelfLbl+": "+fmtDate(until), w:1.15, b:true});
+      }
+      if(f.allergens.length) L.push({t:"Allergene: "+f.allergens.join(", "), w:0.9, b:false});
+      if(f.extra) L.push({t:f.extra, w:0.9, b:false});
+      return L;
+    };
+    const a=build(false), b=build(true);
+    const best = fitLines(ctx,b,m,m,W-2*m,H-2*m,"left",true) > fitLines(ctx,a,m,m,W-2*m,H-2*m,"left",true)*1.1 ? b : a;
+    fitLines(ctx, best, m, m, W-2*m, H-2*m, "left");
+    toMono(canvas,"threshold");
+  }
+  else if(st.type==="image"){
+    const im=st.image;
+    const capH = im.caption ? Math.round((H-2*m)*(H>W?0.18:0.28)) : 0;
+    const boxW=W-2*m, boxH=H-2*m-(capH?capH+m/2:0);
+    const img = await loadImg(im.data);
+    if(img){
+      const tmp=document.createElement("canvas"); tmp.width=boxW; tmp.height=boxH;
+      const tc=tmp.getContext("2d"); tc.fillStyle="#fff"; tc.fillRect(0,0,boxW,boxH);
+      const s=Math.min(boxW/img.width, boxH/img.height);
+      const iw=img.width*s, ih=img.height*s;
+      tc.imageSmoothingQuality="high";
+      tc.drawImage(img,(boxW-iw)/2,(boxH-ih)/2,iw,ih);
+      toMono(tmp, im.mode, im.bright, im.contrast, im.invert);
+      ctx.drawImage(tmp,m,m);
+    } else {
+      ctx.fillStyle="#000"; ctx.font="400 "+Math.round(Math.min(W,H)/9)+"px "+FONT; ctx.textAlign="center"; ctx.textBaseline="middle";
+      ctx.fillText("Bild wählen", W/2, m+boxH/2); ctx.textAlign="left";
+    }
+    if(capH){
+      const tmp=document.createElement("canvas"); tmp.width=W; tmp.height=capH;
+      const tc=tmp.getContext("2d"); tc.fillStyle="#fff"; tc.fillRect(0,0,W,capH);
+      fitLines(tc,[{t:im.caption,w:1,b:true}], m, 0, W-2*m, capH, "center");
+      toMono(tmp,"threshold");
+      ctx.drawImage(tmp,0,H-m-capH);
+    }
+  }
+  if(border){ const lw=Math.max(2,Math.round(DPM*0.4)); ctx.strokeStyle="#000"; ctx.lineWidth=lw; const o=Math.round(m/2); ctx.strokeRect(o,o,W-2*o,H-2*o); }
+  return canvas;
+}
+
+/* ---------- Bluetooth ---------- */
+const BT = { device:null, ch:null };
+function btSupported(){ return !!(navigator.bluetooth && navigator.bluetooth.requestDevice); }
+function setConnUI(){
+  const b=$("btConn"); const on=!!(BT.ch && BT.device && BT.device.gatt.connected);
+  b.classList.toggle("on", on); b.textContent = on ? "● "+(BT.device.name||"Verbunden") : "Drucker verbinden";
+}
+async function connect(){
+  if(!btSupported()){ toast("Dieser Browser kann kein Bluetooth – siehe Hinweis", 3500); showTab("home"); return false; }
+  try{
+    const dev = await navigator.bluetooth.requestDevice({ acceptAllDevices:true, optionalServices:[0xff00] });
+    dev.addEventListener("gattserverdisconnected", ()=>{ BT.ch=null; setConnUI(); });
+    const server = await dev.gatt.connect();
+    const svc = await server.getPrimaryService(0xff00);
+    BT.ch = await svc.getCharacteristic(0xff02);
+    BT.device = dev; setConnUI(); toast("Verbunden mit "+(dev.name||"Drucker"));
+    return true;
+  }catch(e){ if(e && e.name!=="NotFoundError") toast("Verbindung fehlgeschlagen: "+(e.message||e), 4000); setConnUI(); return false; }
+}
+async function ensureConn(){
+  if(BT.ch && BT.device && BT.device.gatt.connected) return true;
+  if(BT.device){ try{ const s=await BT.device.gatt.connect(); BT.ch=await (await s.getPrimaryService(0xff00)).getCharacteristic(0xff02); setConnUI(); return true; }catch(e){} }
+  return connect();
+}
+async function send(bytes){
+  const ch=BT.ch, size=settings.chunk, noResp = ch.properties && ch.properties.writeWithoutResponse && ch.writeValueWithoutResponse;
+  for(let i=0;i<bytes.length;i+=size){
+    const part=bytes.slice(i,i+size);
+    if(noResp) await ch.writeValueWithoutResponse(part); else await ch.writeValue(part);
+    if(settings.delay) await sleep(settings.delay);
+  }
+}
+// Label-Canvas -> Druckauftrag (ESC/POS-Raster, wie M110-Original-App)
+function buildJob(canvas){
+  const lw=canvas.width, h=canvas.height;
+  const src=canvas.getContext("2d").getImageData(0,0,lw,h).data;
+  const bpl=HEAD/8;
+  const ras=new Uint8Array(bpl*h);
+  const off=Math.round((HEAD-lw)/2 + settings.offX*DPM);
+  for(let y=0;y<h;y++) for(let x=0;x<lw;x++){
+    const px=x+off; if(px<0||px>=HEAD) continue;
+    if(src[(y*lw+x)*4]<128) ras[y*bpl+(px>>3)] |= (0x80>>(px&7));
+  }
+  const head=[0x1b,0x4e,0x0d,settings.speed, 0x1b,0x4e,0x04,settings.dens, 0x1f,0x11,settings.media,
+              0x1d,0x76,0x30,0x00, bpl&0xff, bpl>>8, h&0xff, h>>8];
+  const foot=[0x1f,0xf0,0x05,0x00, 0x1f,0xf0,0x03,0x00];
+  const out=new Uint8Array(head.length+ras.length+foot.length);
+  out.set(head,0); out.set(ras,head.length); out.set(foot,head.length+ras.length);
+  return out;
+}
+let printing=false;
+async function printState(st, qty){
+  if(printing) return;
+  if(!(await ensureConn())) return;
+  printing=true; $("btPrint").disabled=true;
+  try{
+    for(let i=0;i<qty;i++){
+      toast(qty>1 ? `Drucke ${i+1} von ${qty} …` : "Drucke …", 60000);
+      const cv=await renderLabel(st, document.createElement("canvas"), new Date());
+      await send(buildJob(cv));
+      await sleep(900);
+    }
+    toast("Fertig ✓");
+  }catch(e){ toast("Druckfehler: "+(e.message||e), 4500); }
+  printing=false; $("btPrint").disabled=false;
+}
+
+/* ---------- UI: Tabs ---------- */
+function showTab(t){
+  document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on", b.dataset.tab===t));
+  ["home","edit","settings"].forEach(x=>$("tab-"+x).classList.toggle("hide", x!==t));
+  $("printBar").classList.toggle("hide", t!=="edit");
+  if(t==="home") renderList();
+  if(t==="edit") redraw();
+}
+$("tabs").addEventListener("click", e=>{ const b=e.target.closest("button"); if(b) showTab(b.dataset.tab); });
+$("btConn").addEventListener("click", connect);
+
+/* ---------- UI: Vorlagenliste ---------- */
+async function renderList(){
+  const list=$("tplList"); list.innerHTML="";
+  $("tplEmpty").classList.toggle("hide", templates.length>0);
+  for(const t of templates){
+    const el=document.createElement("div"); el.className="tpl";
+    const [w,h]=dims(t);
+    const typ={text:"Text",food:"Lebensmittel",image:"Bild"}[t.type];
+    el.innerHTML=`<div class="thumb"><canvas></canvas></div><div><div class="nm"></div><div class="sub">${typ} · ${w}×${h} mm</div></div>
+      <div class="acts"><button class="btn main" data-a="print">Drucken</button><button class="btn ghost" data-a="edit">✎</button><button class="btn del" data-a="del">✕</button></div>`;
+    el.querySelector(".nm").textContent=t.name;
+    renderLabel(t, el.querySelector("canvas"));
+    el.addEventListener("click", e=>{
+      const a=e.target.closest("button")?.dataset.a;
+      if(a==="print") openPrintDlg(t);
+      else if(a==="edit"){ S=JSON.parse(JSON.stringify(t)); loadEditor(); showTab("edit"); }
+      else if(a==="del"){ const b=e.target.closest("button");
+        if(b.dataset.sure){ templates=templates.filter(x=>x.id!==t.id); store.set("m110.templates",templates); renderList(); }
+        else { b.dataset.sure="1"; b.textContent="Löschen?"; setTimeout(()=>{ b.dataset.sure=""; b.textContent="✕"; },3000); } }
+      else if(!a) openPrintDlg(t);
+    });
+    list.appendChild(el);
+  }
+}
+let dpTpl=null, dpQty=1;
+function openPrintDlg(t){
+  dpTpl=t; dpQty=1; $("dpQty").textContent="1"; $("dpName").textContent=t.name;
+  renderLabel(t, $("dpCv"));
+  $("dlgPrint").showModal();
+}
+$("dpMinus").onclick=()=>{ dpQty=Math.max(1,dpQty-1); $("dpQty").textContent=dpQty; };
+$("dpPlus").onclick=()=>{ dpQty=Math.min(99,dpQty+1); $("dpQty").textContent=dpQty; };
+$("dpCancel").onclick=()=>$("dlgPrint").close();
+$("dpGo").onclick=()=>{ $("dlgPrint").close(); printState(dpTpl, dpQty); };
+
+/* ---------- UI: Editor ---------- */
+const ab=$("allerg");
+ALLERGENS.forEach(([k,n])=>{ const b=document.createElement("button"); b.dataset.v=k; b.innerHTML=`<b>${k}</b> ${n}`; ab.appendChild(b); });
+ab.addEventListener("click", e=>{ const b=e.target.closest("button"); if(!b) return; const k=b.dataset.v; const a=S.food.allergens;
+  const i=a.indexOf(k); if(i>=0) a.splice(i,1); else { a.push(k); a.sort((x,y)=>ALLERGENS.findIndex(q=>q[0]===x)-ALLERGENS.findIndex(q=>q[0]===y)); }
+  b.classList.toggle("on", a.includes(k)); redraw(); });
+
+function loadEditor(){
+  setSeg("segType",S.type); setSeg("segSize",S.size); $("cW").value=S.cw; $("cH").value=S.ch;
+  $("customSize").classList.toggle("hide", S.size!=="custom");
+  $("tText").value=S.text.text; setSeg("segAlign",S.text.align); $("tBold").checked=S.text.bold; $("tFirstBig").checked=S.text.firstBig; $("tBorder").checked=S.text.border;
+  $("fName").value=S.food.name; setSeg("segMade",S.food.made); setSeg("segShelf",S.food.shelf); $("fShelf").value=S.food.shelf; setSeg("segShelfLbl",S.food.shelfLbl);
+  [...ab.children].forEach(b=>b.classList.toggle("on", S.food.allergens.includes(b.dataset.v)));
+  $("fExtra").value=S.food.extra; $("fTime").checked=S.food.time; $("fBorder").checked=S.food.border;
+  $("iBright").value=S.image.bright; $("iContrast").value=S.image.contrast; setSeg("segDither",S.image.mode); $("iInvert").checked=S.image.invert; $("iCaption").value=S.image.caption;
+  $("tplName").value=S.name;
+  $("editInfo").textContent = S.id ? "Du bearbeitest eine gespeicherte Vorlage. „Speichern“ überschreibt sie." : "";
+  showFields();
+}
+function showFields(){ $("fText").classList.toggle("hide",S.type!=="text"); $("fFood").classList.toggle("hide",S.type!=="food"); $("fImage").classList.toggle("hide",S.type!=="image"); }
+
+let rq=0;
+async function redraw(){
+  const my=++rq; const cv=document.createElement("canvas");
+  await renderLabel(S, cv); if(my!==rq) return;
+  const out=$("cv"); out.width=cv.width; out.height=cv.height; out.getContext("2d").drawImage(cv,0,0);
+  const [w,h]=dims(S);
+  out.style.width = Math.min(340, w*7)+"px";
+  $("meta").textContent = `${w} × ${h} mm · ${cv.width} × ${cv.height} Punkte`+(w>48?" · Druckbereich max. 48 mm breit":"");
+}
+
+seg("segType", v=>{ S.type=v; showFields(); redraw(); });
+seg("segSize", v=>{ S.size=v; $("customSize").classList.toggle("hide", v!=="custom"); redraw(); });
+$("cW").oninput=()=>{ S.cw=+$("cW").value; redraw(); };
+$("cH").oninput=()=>{ S.ch=+$("cH").value; redraw(); };
+$("tText").oninput=()=>{ S.text.text=$("tText").value; redraw(); };
+seg("segAlign", v=>{ S.text.align=v; redraw(); });
+$("tBold").onchange=()=>{ S.text.bold=$("tBold").checked; redraw(); };
+$("tFirstBig").onchange=()=>{ S.text.firstBig=$("tFirstBig").checked; redraw(); };
+$("tBorder").onchange=()=>{ S.text.border=$("tBorder").checked; redraw(); };
+$("fName").oninput=()=>{ S.food.name=$("fName").value; redraw(); };
+seg("segMade", v=>{ S.food.made=v; redraw(); });
+seg("segShelf", v=>{ S.food.shelf=+v; $("fShelf").value=v; redraw(); });
+$("fShelf").oninput=()=>{ S.food.shelf=Math.max(0,+$("fShelf").value||0); setSeg("segShelf",S.food.shelf); redraw(); };
+seg("segShelfLbl", v=>{ S.food.shelfLbl=v; redraw(); });
+$("fExtra").oninput=()=>{ S.food.extra=$("fExtra").value; redraw(); };
+$("fTime").onchange=()=>{ S.food.time=$("fTime").checked; redraw(); };
+$("fBorder").onchange=()=>{ S.food.border=$("fBorder").checked; redraw(); };
+$("iPick").onclick=()=>$("iFile").click();
+$("iFile").onchange=async()=>{
+  const f=$("iFile").files[0]; if(!f) return;
+  const url=URL.createObjectURL(f); const img=await loadImg(url);
+  if(!img){ toast("Bild konnte nicht geladen werden"); return; }
+  // verkleinern, damit Vorlagen klein bleiben (max. 640 px)
+  const s=Math.min(1, 640/Math.max(img.width,img.height));
+  const c=document.createElement("canvas"); c.width=Math.round(img.width*s); c.height=Math.round(img.height*s);
+  const cx=c.getContext("2d"); cx.fillStyle="#fff"; cx.fillRect(0,0,c.width,c.height); cx.drawImage(img,0,0,c.width,c.height);
+  S.image.data=c.toDataURL("image/png"); URL.revokeObjectURL(url); $("iFile").value=""; redraw();
+};
+$("iBright").oninput=()=>{ S.image.bright=+$("iBright").value; redraw(); };
+$("iContrast").oninput=()=>{ S.image.contrast=+$("iContrast").value; redraw(); };
+seg("segDither", v=>{ S.image.mode=v; redraw(); });
+$("iInvert").onchange=()=>{ S.image.invert=$("iInvert").checked; redraw(); };
+$("iCaption").oninput=()=>{ S.image.caption=$("iCaption").value; redraw(); };
+
+$("btSave").onclick=()=>{
+  const name=$("tplName").value.trim() || (S.type==="food"?S.food.name: S.type==="text"? (S.text.text.split("\n")[0]||"Etikett") : (S.image.caption||"Bild"));
+  S.name=name;
+  if(!S.id){ S.id=Date.now().toString(36)+Math.random().toString(36).slice(2,6); templates.push(JSON.parse(JSON.stringify(S))); }
+  else { const i=templates.findIndex(t=>t.id===S.id); if(i>=0) templates[i]=JSON.parse(JSON.stringify(S)); else templates.push(JSON.parse(JSON.stringify(S))); }
+  if(store.set("m110.templates",templates)){ toast(`„${name}“ gespeichert`); loadEditor(); }
+};
+$("btNew").onclick=()=>{ S=defaultState(); loadEditor(); redraw(); };
+
+let qty=1;
+$("qMinus").onclick=()=>{ qty=Math.max(1,qty-1); $("qVal").textContent=qty; };
+$("qPlus").onclick=()=>{ qty=Math.min(99,qty+1); $("qVal").textContent=qty; };
+$("btPrint").onclick=()=>printState(JSON.parse(JSON.stringify(S)), qty);
+
+/* ---------- UI: Einstellungen ---------- */
+function bindRange(id, key, vid, fmt){
+  const el=$(id); el.value=settings[key]; $(vid).textContent=fmt?fmt(settings[key]):settings[key];
+  el.oninput=()=>{ settings[key]=+el.value; $(vid).textContent=fmt?fmt(settings[key]):settings[key]; store.set("m110.settings",settings); };
+}
+bindRange("sDens","dens","vDens"); bindRange("sSpeed","speed","vSpeed"); bindRange("sOffX","offX","vOffX");
+bindRange("sChunk","chunk","vChunk"); bindRange("sDelay","delay","vDelay");
+setSeg("segMedia",settings.media); seg("segMedia", v=>{ settings.media=+v; store.set("m110.settings",settings); });
+
+$("btExport").onclick=()=>{
+  const blob=new Blob([JSON.stringify({app:"m110-etikett",v:1,templates,settings},null,1)],{type:"application/json"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="etikett-vorlagen.json"; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+};
+$("btImport").onclick=()=>$("impFile").click();
+$("impFile").onchange=async()=>{
+  try{
+    const data=JSON.parse(await $("impFile").files[0].text());
+    const incoming=(data.templates||[]).filter(t=>t&&t.id&&t.type);
+    let n=0; for(const t of incoming){ const i=templates.findIndex(x=>x.id===t.id); if(i>=0) templates[i]=t; else templates.push(t); n++; }
+    store.set("m110.templates",templates); toast(n+" Vorlagen importiert"); renderList();
+  }catch(e){ toast("Datei konnte nicht gelesen werden"); }
+  $("impFile").value="";
+};
+
+/* ---------- Start ---------- */
+if(!btSupported()){
+  const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform==="MacIntel" && navigator.maxTouchPoints>1);
+  const n=$("noBt"); n.classList.remove("hide");
+  n.innerHTML = isIOS
+    ? "Safari kann leider nicht per Bluetooth drucken. Öffne diese Seite in der kostenlosen App <b>„Bluefy – Web BLE Browser“</b> aus dem App Store. Gestalten und Vorlagen speichern geht aber auch hier."
+    : "Dieser Browser unterstützt kein Bluetooth. Bitte <b>Chrome</b> oder <b>Edge</b> verwenden. Gestalten und Vorlagen speichern geht aber auch hier.";
+}
+if(!templates.length){
+  // Startvorlagen
+  const a=defaultState(); a.id="demo1"; a.name="Tomatensauce +3"; a.type="food"; a.food.allergens=["L"];
+  const b=defaultState(); b.id="demo2"; b.name="Jora (Text)"; b.size="50x20"; b.text.text="Restaurant Jora\nInnichen";
+  templates=[a,b]; store.set("m110.templates",templates);
+}
+loadEditor(); setConnUI(); showTab("home");
+</script>
+</body>
+</html>
