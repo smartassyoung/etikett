@@ -459,9 +459,14 @@ async function connect(){
   let step="Suche";
   try{
     const dev = await pickDevice();
-    step="Verbinden mit "+(dev.name||"Gerät");
+    step="Verbinden mit "+(dev.name||("Gerät "+String(dev.id||"").slice(0,8)));
     dev.addEventListener("gattserverdisconnected", ()=>{ BT.ch=null; setConnUI(); });
-    const server = await dev.gatt.connect();
+    let server, lastErr;
+    for(let i=0;i<3 && !server;i++){
+      try{ server = await dev.gatt.connect(); }
+      catch(e){ lastErr=e; toast("Verbindungsversuch "+(i+2)+" …", 1500); await sleep(1200); }
+    }
+    if(!server) throw lastErr;
     step="Druckkanal";
     BT.ch = await findWriteChar(server);
     BT.device = dev; setConnUI(); toast("Verbunden mit "+(dev.name||"Drucker"));
