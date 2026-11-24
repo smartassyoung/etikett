@@ -11,14 +11,14 @@
 body{margin:0;font:16px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);padding-bottom:env(safe-area-inset-bottom)}
 header{position:sticky;top:0;z-index:5;background:var(--bg);padding:calc(10px + env(safe-area-inset-top)) 16px 8px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line)}
 header h1{font-size:19px;margin:0;flex:1}
-.pill{border:0;border-radius:999px;padding:8px 14px;font:inherit;font-size:14px;font-weight:600;background:#fff;color:var(--ink);box-shadow:0 0 0 1px var(--line)}
+.pill{border:0;border-radius:999px;padding:8px 14px;font:inherit;font-size:14px;font-weight:600;background:#fff;color:var(--ink);box-shadow:0 0 0 1px var(--line);max-width:62vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pill.on{background:var(--acc);color:#fff;box-shadow:none}
 nav{display:flex;gap:6px;padding:10px 16px;overflow-x:auto}
 nav button{flex:0 0 auto;border:0;background:transparent;font:inherit;font-weight:600;color:var(--mute);padding:8px 12px;border-radius:10px}
 nav button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
 main{max-width:980px;margin:0 auto;padding:0 16px 120px}
 .grid{display:grid;gap:16px}
-@media(min-width:760px){.grid.two{grid-template-columns:1fr 1fr;align-items:start}}
+@media(min-width:760px){.grid.two{grid-template-columns:1fr 1fr;align-items:start}.sticky{position:sticky;top:120px}}
 .card{background:var(--card);border-radius:var(--r);padding:16px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
 .card h2{font-size:15px;margin:0 0 12px;color:var(--mute);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
 label{display:block;font-size:14px;color:var(--mute);margin:12px 0 4px}
@@ -27,7 +27,7 @@ textarea{min-height:90px;resize:vertical}
 input[type=range]{width:100%}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .seg{display:flex;background:var(--bg);border-radius:10px;padding:3px;gap:3px;flex-wrap:wrap}
-.seg button{flex:1;border:0;background:transparent;font:inherit;font-size:14px;font-weight:600;padding:8px 10px;border-radius:8px;color:var(--mute);min-width:60px}
+.seg button{flex:1;border:0;background:transparent;font:inherit;font-size:14px;font-weight:600;padding:8px 10px;border-radius:8px;color:var(--mute);min-width:54px}
 .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.1)}
 .chk{display:flex;align-items:center;gap:8px;font-size:15px;color:var(--ink);margin:10px 0 0}
 .chk input{width:20px;height:20px}
@@ -35,10 +35,16 @@ input[type=range]{width:100%}
 .allerg button{border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px;font:inherit;font-size:14px;text-align:left}
 .allerg button.on{background:var(--acc2);border-color:var(--acc);color:var(--acc);font-weight:600}
 .allerg b{display:inline-block;width:18px}
+.syms{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:6px;margin-top:6px}
+.syms button{border:1px solid var(--line);background:#fff;border-radius:10px;padding:6px 2px 4px;font:inherit;font-size:11px;color:var(--mute);display:flex;flex-direction:column;align-items:center;gap:2px;min-height:64px;justify-content:center}
+.syms button.on{background:var(--acc2);border-color:var(--acc);color:var(--acc);font-weight:600}
+.syms canvas{width:34px;height:34px;image-rendering:pixelated}
+.syms .add{font-size:22px;color:var(--acc)}
 .btn{border:0;border-radius:12px;padding:12px 16px;font:inherit;font-weight:600;background:var(--acc2);color:var(--acc)}
 .btn.main{background:var(--acc);color:#fff}
 .btn.ghost{background:#fff;box-shadow:0 0 0 1px var(--line);color:var(--ink)}
 .btn.del{background:#fbeceb;color:var(--warn)}
+.btn.sm{padding:8px 12px;font-size:14px}
 .btn:disabled{opacity:.45}
 .preview{display:flex;justify-content:center;align-items:center;background:repeating-conic-gradient(#ebe8e2 0 25%,#f4f2ee 0 50%) 0 0/16px 16px;border-radius:10px;padding:18px;min-height:180px}
 .preview canvas{background:#fff;border-radius:6px;box-shadow:0 2px 10px rgba(0,0,0,.15);image-rendering:pixelated;max-width:100%;max-height:420px}
@@ -46,7 +52,7 @@ input[type=range]{width:100%}
 .tpls{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
 .tpl{background:var(--card);border-radius:var(--r);padding:10px;box-shadow:0 1px 2px rgba(0,0,0,.06);display:flex;flex-direction:column;gap:8px}
 .tpl .thumb{display:flex;align-items:center;justify-content:center;height:110px;background:var(--bg);border-radius:8px}
-.tpl canvas{max-width:92%;max-height:96px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.15);image-rendering:pixelated}
+.tpl canvas{max-width:92%;max-height:96px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.15)}
 .tpl .nm{font-weight:600;font-size:15px;line-height:1.2}
 .tpl .sub{font-size:12px;color:var(--mute)}
 .tpl .acts{display:flex;gap:6px}
@@ -64,6 +70,11 @@ input[type=range]{width:100%}
 .hint.warn{background:#fdf3e1;color:#7a4b00}
 .hide{display:none!important}
 .small{font-size:13px;color:var(--mute)}
+.logoBox{display:flex;align-items:center;justify-content:center;height:110px;background:var(--bg);border-radius:10px;margin-top:8px}
+.logoBox canvas{max-height:96px;max-width:90%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.mysym{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--line)}
+.mysym canvas{width:40px;height:40px;background:#fff;border-radius:6px;box-shadow:0 0 0 1px var(--line)}
+.mysym span{flex:1}
 dialog{border:0;border-radius:16px;padding:20px;max-width:360px;width:90vw}
 dialog::backdrop{background:rgba(0,0,0,.35)}
 </style>
@@ -80,25 +91,23 @@ dialog::backdrop{background:rgba(0,0,0,.35)}
 </nav>
 
 <main>
-  <!-- VORLAGEN -->
   <section id="tab-home">
     <div id="noBt" class="hint warn hide"></div>
     <div id="tplList" class="tpls" style="margin-top:12px"></div>
-    <div id="tplEmpty" class="empty hide">Noch keine Vorlagen.<br>Unter „Neu / Bearbeiten“ ein Etikett gestalten und speichern – danach druckst du es hier mit einem Tipp.</div>
+    <div id="tplEmpty" class="empty hide">Noch keine Vorlagen.<br>Unter „Neu / Bearbeiten“ ein Etikett gestalten und speichern.</div>
   </section>
 
-  <!-- EDITOR -->
   <section id="tab-edit" class="hide">
     <div class="grid two">
       <div class="grid">
         <div class="card">
           <h2>Art & Größe</h2>
           <div class="seg" id="segType">
-            <button data-v="text" class="on">Text</button>
+            <button data-v="text" class="on">Text / Adresse</button>
             <button data-v="food">Lebensmittel</button>
-            <button data-v="image">Bild / Logo</button>
+            <button data-v="image">Bild</button>
           </div>
-          <label>Etikett (Breite × Höhe)</label>
+          <label>Etikett (Breite × Länge der Rolle)</label>
           <div class="seg" id="segSize">
             <button data-v="40x30" class="on">40×30</button>
             <button data-v="50x20">50×20</button>
@@ -109,13 +118,33 @@ dialog::backdrop{background:rgba(0,0,0,.35)}
             <input type="number" id="cW" min="10" max="50" value="40" style="flex:1" inputmode="numeric"> <span>×</span>
             <input type="number" id="cH" min="10" max="150" value="30" style="flex:1" inputmode="numeric"> <span>mm</span>
           </div>
+          <label>Ausrichtung</label>
+          <div class="seg" id="segRot">
+            <button data-v="0" class="on">Normal</button>
+            <button data-v="1">Gedreht (90°)</button>
+          </div>
+          <div class="small" style="margin-top:6px">„Gedreht“ z. B. für Adress-Etiketten auf 50×80 im Querformat.</div>
         </div>
 
-        <!-- TEXT -->
+        <div class="card" id="fDeco">
+          <h2>Logo & Symbol</h2>
+          <label class="chk"><input type="checkbox" id="dLogo"> Logo einfügen</label>
+          <div class="small hide" id="noLogoHint" style="margin-top:4px">Noch kein Logo hinterlegt – unter <b>Einstellungen → Logo</b> einmal hochladen.</div>
+          <label>Symbol</label>
+          <div class="syms" id="symGrid"></div>
+          <input type="file" id="symFile" accept="image/*" class="hide">
+          <div id="symStyle">
+            <label>Symbol-Darstellung</label>
+            <div class="seg" id="segSymMode">
+              <button data-v="silhouette" class="on">Schattenriss</button><button data-v="dither">Mit Details</button>
+            </div>
+          </div>
+        </div>
+
         <div class="card" id="fText">
           <h2>Text</h2>
-          <label>Zeilen (jede Zeile wird automatisch so groß wie möglich)</label>
-          <textarea id="tText" placeholder="z. B.&#10;Gewürze&#10;Oregano">Jora</textarea>
+          <label>Zeilen (jede Zeile wird so groß wie möglich)</label>
+          <textarea id="tText" placeholder="z. B.&#10;Max Mustermann&#10;Hauptstraße 1&#10;39038 Innichen">Jora</textarea>
           <label>Ausrichtung</label>
           <div class="seg" id="segAlign">
             <button data-v="left">Links</button><button data-v="center" class="on">Mitte</button><button data-v="right">Rechts</button>
@@ -125,36 +154,42 @@ dialog::backdrop{background:rgba(0,0,0,.35)}
           <label class="chk"><input type="checkbox" id="tBorder"> Rahmen</label>
         </div>
 
-        <!-- FOOD -->
         <div class="card hide" id="fFood">
           <h2>Lebensmittel</h2>
           <label>Produkt</label>
           <input type="text" id="fName" value="Tomatensauce">
-          <label>Zubereitet</label>
-          <div class="seg" id="segMade">
+          <label>Zweite Zeile (optional, z. B. Teilstück, Sorte)</label>
+          <input type="text" id="fSub" placeholder="z. B. Rücken · ca. 500 g">
+          <label>Datum 1</label>
+          <div class="seg" id="segMadeLbl">
+            <button data-v="Zubereitet" class="on">Zubereitet</button><button data-v="Abgefüllt">Abgefüllt</button><button data-v="Eingefroren">Eingefroren</button><button data-v="Verpackt">Verpackt</button>
+          </div>
+          <div class="seg" id="segMade" style="margin-top:6px">
             <button data-v="0" class="on">Heute</button><button data-v="-1">Gestern</button><button data-v="none">Ausblenden</button>
           </div>
-          <label>Haltbar bis (Tage ab Zubereitung)</label>
+          <label>Datum 2 (ab Datum 1)</label>
           <div class="seg" id="segShelf">
-            <button data-v="1">+1</button><button data-v="2">+2</button><button data-v="3" class="on">+3</button><button data-v="5">+5</button><button data-v="7">+7</button><button data-v="14">+14</button><button data-v="30">+30</button>
+            <button data-v="d1">+1 T</button><button data-v="d2">+2 T</button><button data-v="d3" class="on">+3 T</button><button data-v="d5">+5 T</button><button data-v="d7">+7 T</button>
+            <button data-v="m1">+1 M</button><button data-v="m3">+3 M</button><button data-v="m6">+6 M</button><button data-v="m12">+12 M</button><button data-v="m24">+24 M</button>
           </div>
-          <div class="row" style="margin-top:8px"><span class="small">oder genau:</span><input type="number" id="fShelf" value="3" min="0" max="365" style="width:90px" inputmode="numeric"><span class="small">Tage</span></div>
-          <label>Bezeichnung</label>
-          <div class="seg" id="segShelfLbl">
-            <button data-v="Verbrauchen bis" class="on">Verbrauchen bis</button><button data-v="Haltbar bis">Haltbar bis</button><button data-v="Aufgetaut am">Aufgetaut am</button>
+          <div class="row" style="margin-top:8px"><span class="small">oder genau:</span>
+            <input type="number" id="fShelf" value="3" min="0" max="999" style="width:84px" inputmode="numeric">
+            <select id="fUnit" style="width:auto"><option value="d">Tage</option><option value="m">Monate</option></select>
+          </div>
+          <div class="seg" id="segShelfLbl" style="margin-top:8px">
+            <button data-v="Verbrauchen bis" class="on">Verbrauchen bis</button><button data-v="Mindestens haltbar bis">Mind. haltbar bis</button><button data-v="Haltbar bis">Haltbar bis</button><button data-v="none">Ausblenden</button>
           </div>
           <label>Allergene</label>
           <div class="allerg" id="allerg"></div>
-          <label>Zusatz (z. B. Kürzel, Lagerung)</label>
-          <input type="text" id="fExtra" placeholder="z. B. MH · gekühlt lagern">
+          <label>Zusatz (z. B. Herkunft, Lagerung, Kürzel)</label>
+          <input type="text" id="fExtra" placeholder="z. B. Gekühlt lagern · MH">
           <label class="chk"><input type="checkbox" id="fTime"> Uhrzeit mitdrucken</label>
           <label class="chk"><input type="checkbox" id="fBorder"> Rahmen</label>
-          <div class="hint">Die Daten in gespeicherten Lebensmittel-Vorlagen werden <b>beim Drucken immer neu berechnet</b> – „Heute +3“ bleibt also immer aktuell.</div>
+          <div class="hint">Daten in gespeicherten Vorlagen werden <b>beim Drucken neu berechnet</b> – „Heute +12 M“ stimmt also immer.</div>
         </div>
 
-        <!-- IMAGE -->
         <div class="card hide" id="fImage">
-          <h2>Bild / Logo</h2>
+          <h2>Bild</h2>
           <input type="file" id="iFile" accept="image/*" class="hide">
           <button class="btn ghost" id="iPick" style="width:100%">Bild auswählen …</button>
           <label>Helligkeit</label>
@@ -163,7 +198,7 @@ dialog::backdrop{background:rgba(0,0,0,.35)}
           <input type="range" id="iContrast" min="-100" max="100" value="20">
           <label>Darstellung</label>
           <div class="seg" id="segDither">
-            <button data-v="dither" class="on">Foto (Raster)</button><button data-v="threshold">Logo (scharf)</button>
+            <button data-v="dither" class="on">Foto (Raster)</button><button data-v="threshold">Grafik (scharf)</button>
           </div>
           <label class="chk"><input type="checkbox" id="iInvert"> Invertieren</label>
           <label>Text darunter (optional)</label>
@@ -171,7 +206,7 @@ dialog::backdrop{background:rgba(0,0,0,.35)}
         </div>
       </div>
 
-      <div class="grid" style="position:sticky;top:120px">
+      <div class="grid sticky">
         <div class="card">
           <h2>Vorschau (so wird gedruckt)</h2>
           <div class="preview"><canvas id="cv"></canvas></div>
@@ -182,6 +217,7 @@ dialog::backdrop{background:rgba(0,0,0,.35)}
           <input type="text" id="tplName" placeholder="Name der Vorlage">
           <div class="row" style="margin-top:10px">
             <button class="btn main" id="btSave" style="flex:1">Speichern</button>
+            <button class="btn ghost" id="btCopy">Als Kopie</button>
             <button class="btn ghost" id="btNew">Neu</button>
           </div>
           <div class="small" id="editInfo" style="margin-top:8px"></div>
@@ -190,9 +226,30 @@ dialog::backdrop{background:rgba(0,0,0,.35)}
     </div>
   </section>
 
-  <!-- SETTINGS -->
   <section id="tab-settings" class="hide">
     <div class="grid two">
+      <div class="card">
+        <h2>Logo</h2>
+        <div class="small">Einmal hochladen – danach in jeder Vorlage per Häkchen einfügen. Am besten eine schwarze Grafik auf weißem oder transparentem Hintergrund.</div>
+        <div class="logoBox"><canvas id="logoCv"></canvas><span id="logoNone" class="small">kein Logo</span></div>
+        <input type="file" id="logoFile" accept="image/*" class="hide">
+        <div class="row" style="margin-top:10px">
+          <button class="btn ghost" id="logoPick" style="flex:1">Logo hochladen …</button>
+          <button class="btn del" id="logoDel">Entfernen</button>
+        </div>
+        <label>Darstellung</label>
+        <div class="seg" id="segLogoMode">
+          <button data-v="threshold" class="on">Grafik (scharf)</button><button data-v="dither">Foto (Raster)</button>
+        </div>
+        <label>Helligkeit Logo: <b id="vLogoBr">0</b></label>
+        <input type="range" id="sLogoBr" min="-100" max="100" value="0">
+      </div>
+      <div class="card">
+        <h2>Eigene Symbole</h2>
+        <div class="small">z. B. eigene Tierköpfe oder Früchte. Erscheinen im Editor neben den eingebauten Symbolen.</div>
+        <div id="mySyms" style="margin-top:8px"></div>
+        <button class="btn ghost" id="mySymAdd" style="width:100%;margin-top:10px">Symbol hochladen …</button>
+      </div>
       <div class="card">
         <h2>Druck</h2>
         <label>Schwärze (Druckdichte): <b id="vDens">10</b></label>
@@ -205,7 +262,10 @@ dialog::backdrop{background:rgba(0,0,0,.35)}
         </div>
         <label>Horizontal verschieben: <b id="vOffX">0</b> mm</label>
         <input type="range" id="sOffX" min="-6" max="6" step="0.5" value="0">
-        <div class="small">Falls der Druck nicht mittig auf dem Etikett sitzt.</div>
+        <label>Drehrichtung bei „Gedreht“</label>
+        <div class="seg" id="segRotDir">
+          <button data-v="90" class="on">Im Uhrzeigersinn</button><button data-v="-90">Gegen Uhrzeigersinn</button>
+        </div>
       </div>
       <div class="card">
         <h2>Übertragung</h2>
@@ -217,7 +277,7 @@ dialog::backdrop{background:rgba(0,0,0,.35)}
       </div>
       <div class="card">
         <h2>Vorlagen sichern / übertragen</h2>
-        <div class="small">Vorlagen liegen nur in diesem Browser. Zum Übertragen aufs iPad/iPhone exportieren und dort importieren.</div>
+        <div class="small">Vorlagen, Logo und eigene Symbole liegen nur in diesem Browser. Zum Übertragen aufs iPad exportieren und dort importieren.</div>
         <div class="row" style="margin-top:10px">
           <button class="btn ghost" id="btExport" style="flex:1">Exportieren</button>
           <button class="btn ghost" id="btImport" style="flex:1">Importieren</button>
@@ -227,9 +287,8 @@ dialog::backdrop{background:rgba(0,0,0,.35)}
       <div class="card">
         <h2>Hilfe</h2>
         <div class="small">
-          <b>iPhone/iPad:</b> Safari kann kein Bluetooth. Diese Seite in der kostenlosen App <b>„Bluefy – Web BLE Browser“</b> öffnen.<br><br>
-          <b>Mac/PC/Android:</b> In Chrome oder Edge öffnen.<br><br>
-          Beim Verbinden den Drucker auswählen (meist „M110“ o. ä.). Die Original-App vorher schließen, sonst ist der Drucker belegt.
+          <b>iPhone/iPad:</b> diese Seite in der App <b>„Bluefy“</b> öffnen. <b>Mac/PC/Android:</b> Chrome oder Edge.<br><br>
+          Der Drucker erscheint in der Liste unter seiner Seriennummer (z. B. „Q199…“).
         </div>
       </div>
     </div>
@@ -247,7 +306,7 @@ dialog::backdrop{background:rgba(0,0,0,.35)}
 
 <dialog id="dlgPrint">
   <div style="font-weight:700;font-size:18px" id="dpName"></div>
-  <div style="display:flex;justify-content:center;margin:14px 0;background:var(--bg);border-radius:10px;padding:14px"><canvas id="dpCv" style="max-width:100%;max-height:260px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.15);image-rendering:pixelated"></canvas></div>
+  <div style="display:flex;justify-content:center;margin:14px 0;background:var(--bg);border-radius:10px;padding:14px"><canvas id="dpCv" style="max-width:100%;max-height:260px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.15)"></canvas></div>
   <div class="row" style="justify-content:space-between">
     <div class="qty"><button id="dpMinus">−</button><span id="dpQty">1</span><button id="dpPlus">+</button></div>
     <button class="btn ghost" id="dpCancel">Abbrechen</button>
@@ -255,200 +314,237 @@ dialog::backdrop{background:rgba(0,0,0,.35)}
   </div>
 </dialog>
 
+<dialog id="dlgSym">
+  <div style="font-weight:700;font-size:18px">Symbol benennen</div>
+  <input type="text" id="symName" placeholder="z. B. Gams" style="margin:12px 0">
+  <div class="row" style="justify-content:flex-end">
+    <button class="btn ghost" id="symCancel">Abbrechen</button>
+    <button class="btn main" id="symOk">Hinzufügen</button>
+  </div>
+</dialog>
+
 <script>
 "use strict";
-/* ---------- Konstanten ---------- */
-const DPM = 8;            // Punkte pro mm (203 dpi)
-const HEAD = 384;         // Druckkopf-Breite in Punkten (48 mm)
+const DPM = 8, HEAD = 384;
 const ALLERGENS = [["A","Gluten"],["B","Krebstiere"],["C","Ei"],["D","Fisch"],["E","Erdnuss"],["F","Soja"],["G","Milch"],["H","Schalenfrüchte"],["L","Sellerie"],["M","Senf"],["N","Sesam"],["O","Sulfite"],["P","Lupinen"],["R","Weichtiere"]];
+const EMOJI = [["🦌","Hirsch"],["🐮","Rind/Kalb"],["🐂","Ochse"],["🐷","Schwein"],["🐗","Wildschwein"],["🐑","Lamm"],["🐐","Ziege"],["🐇","Kaninchen"],["🐓","Huhn"],["🦆","Ente"],["🐟","Fisch"],["🦐","Garnele"],
+  ["🍓","Erdbeere"],["🍒","Kirsche"],["🍑","Marille"],["🍐","Birne"],["🍎","Apfel"],["🫐","Beeren"],["🍋","Zitrone"],["🍅","Tomate"],["🌶️","Chili"],["🧅","Zwiebel"],["🥒","Gurke"],["🍄","Pilz"],["🌿","Kräuter"],["🫙","Glas"]];
 const FONT = '-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif';
+const EFONT = '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
 const WD = ["So","Mo","Di","Mi","Do","Fr","Sa"];
 
 /* ---------- Speicher ---------- */
 const store = {
   get(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(e){ return d; } },
-  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); return true; }catch(e){ toast("Speichern im Browser nicht möglich"); return false; } }
+  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); return true; }catch(e){ toast("Speichern im Browser nicht möglich (Speicher voll?)",3500); return false; } }
 };
 let templates = store.get("m110.templates", []);
-let settings = Object.assign({dens:10, speed:3, media:10, offX:0, chunk:128, delay:20}, store.get("m110.settings", {}));
+let settings = Object.assign({dens:10, speed:3, media:10, offX:0, chunk:128, delay:20, rotDir:90, logoMode:"threshold", logoBr:0}, store.get("m110.settings", {}));
+let logoData = store.get("m110.logo", null);
+let mySymbols = store.get("m110.symbols", []);
 
 /* ---------- Helfer ---------- */
 const $ = id => document.getElementById(id);
 function toast(t, ms=2200){ const el=$("toast"); el.textContent=t; el.classList.add("show"); clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove("show"), ms); }
-function seg(id, onChange){
-  const el=$(id);
-  el.addEventListener("click", e=>{ const b=e.target.closest("button"); if(!b) return; setSeg(id,b.dataset.v); onChange && onChange(b.dataset.v); });
-}
+function seg(id, onChange){ $(id).addEventListener("click", e=>{ const b=e.target.closest("button"); if(!b) return; setSeg(id,b.dataset.v); onChange && onChange(b.dataset.v); }); }
 function setSeg(id, v){ [...$(id).children].forEach(b=>b.classList.toggle("on", b.dataset.v==String(v))); }
-function getSeg(id){ const b=$(id).querySelector(".on"); return b ? b.dataset.v : null; }
 function fmtDate(d, time){ const s = WD[d.getDay()]+" "+String(d.getDate()).padStart(2,"0")+"."+String(d.getMonth()+1).padStart(2,"0")+"."+d.getFullYear(); return time ? s+" "+String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0") : s; }
 function addDays(d,n){ const x=new Date(d); x.setDate(x.getDate()+n); return x; }
+function addMonths(d,n){ const x=new Date(d); const day=x.getDate(); x.setDate(1); x.setMonth(x.getMonth()+n); const last=new Date(x.getFullYear(),x.getMonth()+1,0).getDate(); x.setDate(Math.min(day,last)); return x; }
 const sleep = ms => new Promise(r=>setTimeout(r,ms));
+const clone = o => JSON.parse(JSON.stringify(o));
+const uid = () => Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 
-/* ---------- Editor-Zustand ---------- */
+/* ---------- Zustand ---------- */
 function defaultState(){
-  return { id:null, name:"", type:"text", size:"40x30", cw:40, ch:30,
+  return { id:null, name:"", type:"text", size:"40x30", cw:40, ch:30, rot:false,
+    deco:{ logo:false, symbol:null, symMode:"silhouette" },
     text:{ text:"Jora", align:"center", bold:true, firstBig:true, border:false },
-    food:{ name:"Tomatensauce", made:"0", shelf:3, shelfLbl:"Verbrauchen bis", allergens:[], extra:"", time:false, border:false },
+    food:{ name:"Tomatensauce", sub:"", madeLbl:"Zubereitet", made:"0", shelf:3, unit:"d", shelfLbl:"Verbrauchen bis", allergens:[], extra:"", time:false, border:false },
     image:{ data:null, bright:0, contrast:20, mode:"dither", invert:false, caption:"" } };
 }
+function normalize(t){ // ältere Vorlagen ergänzen
+  const d=defaultState(); const o=Object.assign(d, t);
+  o.deco=Object.assign(defaultState().deco, t.deco||{}); o.text=Object.assign(defaultState().text, t.text||{});
+  o.food=Object.assign(defaultState().food, t.food||{}); o.image=Object.assign(defaultState().image, t.image||{});
+  o.rot=!!o.rot; return o;
+}
+templates = templates.map(normalize);
 let S = defaultState();
+
 const imgCache = new Map();
 function loadImg(src){ if(!src) return Promise.resolve(null); if(imgCache.has(src)) return Promise.resolve(imgCache.get(src));
   return new Promise(res=>{ const i=new Image(); i.onload=()=>{imgCache.set(src,i);res(i)}; i.onerror=()=>res(null); i.src=src; }); }
-
-function dims(st){ if(st.size==="custom") return [Math.max(10,Math.min(50,+st.cw||40)), Math.max(10,Math.min(150,+st.ch||30))]; const [w,h]=st.size.split("x").map(Number); return [w,h]; }
+function trim(c){ // weißen/transparenten Rand entfernen
+  const ctx=c.getContext("2d"), d=ctx.getImageData(0,0,c.width,c.height).data; let x0=c.width,y0=c.height,x1=-1,y1=-1;
+  for(let y=0;y<c.height;y++) for(let x=0;x<c.width;x++){ const i=(y*c.width+x)*4; const a=d[i+3]; if(a>20 && (d[i]<240||d[i+1]<240||d[i+2]<240)){ if(x<x0)x0=x; if(x>x1)x1=x; if(y<y0)y0=y; if(y>y1)y1=y; } }
+  if(x1<0) return c; const o=document.createElement("canvas"); o.width=x1-x0+1; o.height=y1-y0+1; o.getContext("2d").drawImage(c,x0,y0,o.width,o.height,0,0,o.width,o.height); return o;
+}
+const emojiCache=new Map();
+function emojiCanvas(e){ if(emojiCache.has(e)) return emojiCache.get(e);
+  const c=document.createElement("canvas"); c.width=c.height=320; const x=c.getContext("2d");
+  x.font="240px "+EFONT; x.textAlign="center"; x.textBaseline="middle"; x.fillText(e,160,170);
+  const t=trim(c); emojiCache.set(e,t); return t; }
+async function symbolSource(id){
+  if(!id) return null;
+  if(id.startsWith("e:")) return emojiCanvas(id.slice(2));
+  if(id.startsWith("u:")){ const s=mySymbols.find(x=>x.id===id.slice(2)); return s ? await loadImg(s.data) : null; }
+  return null;
+}
+function dims(st){ if(st.size==="custom") return [Math.max(10,Math.min(50,+st.cw||40)), Math.max(10,Math.min(150,+st.ch||30))]; return st.size.split("x").map(Number); }
 
 /* ---------- Rendering ---------- */
-// Zeichnet Zeilen so groß wie möglich in eine Box. lines: [{t, w(Gewicht), b(fett)}]
 function fitLines(ctx, lines, x, y, w, h, align, dry){
-  lines = lines.filter(l=>l.t!=="" || l.keep);
-  if(!lines.length) return 0;
-  const gap = 0.18;
-  let lo=4, hi=400;
-  const measure = s => {
-    let total=0, ok=true;
-    for(const l of lines){ const fs=s*l.w; ctx.font=(l.b?"700 ":"400 ")+fs+"px "+FONT; if(ctx.measureText(l.t).width>w) ok=false; total+=fs; }
-    total += s*gap*(lines.length-1);
-    return ok && total<=h;
-  };
-  for(let i=0;i<22;i++){ const m=(lo+hi)/2; if(measure(m)) lo=m; else hi=m; }
-  const s=lo;
-  if(dry) return s;
-  let total=lines.reduce((a,l)=>a+s*l.w,0)+s*gap*(lines.length-1);
+  lines = lines.filter(l=>l.t!=="");
+  if(!lines.length || w<4 || h<4) return 0;
+  const gap = 0.18; let lo=2, hi=400;
+  const ok = s => { let total=0; for(const l of lines){ const fs=s*l.w; ctx.font=(l.b?"700 ":"400 ")+fs+"px "+FONT; if(ctx.measureText(l.t).width>w) return false; total+=fs; } return total + s*gap*(lines.length-1) <= h; };
+  for(let i=0;i<22;i++){ const m=(lo+hi)/2; if(ok(m)) lo=m; else hi=m; }
+  const s=lo; if(dry) return s;
+  const total=lines.reduce((a,l)=>a+s*l.w,0)+s*gap*(lines.length-1);
   let cy = y + (h-total)/2;
   ctx.fillStyle="#000"; ctx.textBaseline="top";
   for(const l of lines){
     const fs=s*l.w; ctx.font=(l.b?"700 ":"400 ")+fs+"px "+FONT;
     const tw=ctx.measureText(l.t).width;
     const tx = align==="left"? x : align==="right"? x+w-tw : x+(w-tw)/2;
-    ctx.fillText(l.t, tx, cy + fs*0.06);
-    cy += fs + s*gap;
+    ctx.fillText(l.t, tx, cy + fs*0.06); cy += fs + s*gap;
   }
+  return s;
 }
-
 function toMono(canvas, mode, bright=0, contrast=0, invert=false){
-  const ctx=canvas.getContext("2d"); const W=canvas.width,H=canvas.height;
-  const id=ctx.getImageData(0,0,W,H), d=id.data;
-  const g=new Float32Array(W*H);
+  const ctx=canvas.getContext("2d"); const W=canvas.width,H=canvas.height; if(!W||!H) return;
+  const id=ctx.getImageData(0,0,W,H), d=id.data, g=new Float32Array(W*H);
   const c=(259*(contrast+255))/(255*(259-contrast));
   for(let i=0;i<W*H;i++){
-    const a=d[i*4+3]/255;
-    let v=(0.299*d[i*4]+0.587*d[i*4+1]+0.114*d[i*4+2])*a+255*(1-a);
-    v=c*(v-128)+128+bright*1.28;
-    if(invert) v=255-v;
-    g[i]=v;
+    const a=d[i*4+3]/255; let v=(0.299*d[i*4]+0.587*d[i*4+1]+0.114*d[i*4+2])*a+255*(1-a);
+    v=c*(v-128)+128+bright*1.28; if(invert) v=255-v; g[i]=v;
   }
+  const thr = mode==="silhouette" ? 235 : 128;
   for(let yy=0;yy<H;yy++) for(let xx=0;xx<W;xx++){
-    const i=yy*W+xx, o=g[i], n=o<128?0:255, e=o-n; g[i]=n;
-    if(mode==="dither"){
-      if(xx+1<W) g[i+1]+=e*7/16;
-      if(yy+1<H){ if(xx>0) g[i+W-1]+=e*3/16; g[i+W]+=e*5/16; if(xx+1<W) g[i+W+1]+=e/16; }
-    }
+    const i=yy*W+xx, o=g[i], n=o<thr?0:255, e=o-n; g[i]=n;
+    if(mode==="dither"){ if(xx+1<W) g[i+1]+=e*7/16; if(yy+1<H){ if(xx>0) g[i+W-1]+=e*3/16; g[i+W]+=e*5/16; if(xx+1<W) g[i+W+1]+=e/16; } }
   }
-  for(let i=0;i<W*H;i++){ const v=g[i]<128?0:255; d[i*4]=d[i*4+1]=d[i*4+2]=v; d[i*4+3]=255; }
+  for(let i=0;i<W*H;i++){ const v=g[i]<thr?0:255; d[i*4]=d[i*4+1]=d[i*4+2]=v; d[i*4+3]=255; }
   ctx.putImageData(id,0,0);
 }
+// Quelle (Bild/Canvas) in Box einpassen und in Schwarzweiß umwandeln
+function drawMono(ctx, src, x, y, w, h, mode, bright=0, contrast=0, invert=false){
+  if(!src || w<2 || h<2) return;
+  const sw=src.naturalWidth||src.width, sh=src.naturalHeight||src.height;
+  const s=Math.min(w/sw, h/sh), iw=Math.max(1,Math.round(sw*s)), ih=Math.max(1,Math.round(sh*s));
+  const t=document.createElement("canvas"); t.width=iw; t.height=ih;
+  const tc=t.getContext("2d"); tc.fillStyle="#fff"; tc.fillRect(0,0,iw,ih); tc.imageSmoothingQuality="high"; tc.drawImage(src,0,0,iw,ih);
+  toMono(t, mode, bright, contrast, invert);
+  ctx.drawImage(t, Math.round(x+(w-iw)/2), Math.round(y+(h-ih)/2));
+}
+function foodLines(f, now){
+  const made = f.made==="none" ? null : addDays(now, +f.made);
+  const base = made||now; const n=+f.shelf||0;
+  const until = f.unit==="m" ? addMonths(base,n) : addDays(base,n);
+  const md = made ? fmtDate(made, f.time && f.made==="0") : null;
+  const sl = f.shelfLbl!=="none";
+  const build = split => {
+    const L=[];
+    if(f.name) L.push({t:f.name, w:1.7, b:true});
+    if(f.sub) L.push({t:f.sub, w:1.05, b:false});
+    if(split){
+      if(md){ L.push({t:f.madeLbl+":", w:0.85, b:false}); L.push({t:md, w:1, b:false}); }
+      if(sl){ L.push({t:f.shelfLbl+":", w:0.85, b:false}); L.push({t:fmtDate(until), w:1.3, b:true}); }
+    } else {
+      if(md) L.push({t:f.madeLbl+": "+md, w:1, b:false});
+      if(sl) L.push({t:f.shelfLbl+": "+fmtDate(until), w:1.15, b:true});
+    }
+    if(f.allergens.length) L.push({t:"Allergene: "+f.allergens.join(", "), w:0.9, b:false});
+    if(f.extra) L.push({t:f.extra, w:0.9, b:false});
+    return L;
+  };
+  return [build(false), build(true)];
+}
+function textLines(t){ const raw=(t.text||"").split("\n").map(s=>s.trim()).filter(s=>s!==""); return raw.map((s,i)=>({t:s, w:(t.firstBig&&raw.length>1&&i===0)?1.5:1, b:t.bold || (t.firstBig&&i===0)})); }
+function contentScale(ctx, st, [x,y,w,h], now){
+  if(st.type==="text") return fitLines(ctx, textLines(st.text), x,y,w,h, "left", true);
+  if(st.type==="food"){ const [a,b]=foodLines(st.food, now); return Math.max(fitLines(ctx,a,x,y,w,h,"left",true), fitLines(ctx,b,x,y,w,h,"left",true)); }
+  return 1;
+}
+// zeichnet das Etikett in Leserichtung; forPrint+gedreht -> Ergebnis wird für den Druckkopf gedreht
+async function renderLabel(st, canvas, now=new Date(), forPrint=false){
+  const [wmm,hmm]=dims(st);
+  const W=Math.round((st.rot?hmm:wmm)*DPM), H=Math.round((st.rot?wmm:hmm)*DPM);
+  const lc = (forPrint && st.rot) ? document.createElement("canvas") : canvas;
+  lc.width=W; lc.height=H;
+  const ctx=lc.getContext("2d"); ctx.fillStyle="#fff"; ctx.fillRect(0,0,W,H);
+  const m = Math.round(Math.min(W,H)*0.06)+4;
+  let bx=m, by=m, bw=W-2*m, bh=H-2*m, border=false;
 
-async function renderLabel(st, canvas, now=new Date()){
-  const [wmm,hmm]=dims(st); const W=Math.round(wmm*DPM), H=Math.round(hmm*DPM);
-  canvas.width=W; canvas.height=H;
-  const ctx=canvas.getContext("2d");
-  ctx.fillStyle="#fff"; ctx.fillRect(0,0,W,H);
-  const m = Math.round(Math.min(W,H)*0.07)+4;
-  let border=false;
+  // Logo & Symbol
+  if(st.type!=="image"){
+    const items=[];
+    if(st.deco.symbol){ const s=await symbolSource(st.deco.symbol); if(s) items.push({src:s, mode:st.deco.symMode==="dither"?"dither":"silhouette", br:0}); }
+    if(st.deco.logo && logoData){ const l=await loadImg(logoData); if(l) items.push({src:l, mode:settings.logoMode, br:settings.logoBr}); }
+    if(items.length){
+      const gap=Math.round(m*0.8), n=items.length;
+      // Variante A: Spalte links
+      const cw=Math.round(Math.min(bh*(n>1?0.62:0.85), bw*(n>1?0.36:0.32)));
+      const side={box:[bx+cw+gap,by,bw-cw-gap,bh], draw:()=>{ const ih=(bh-(n-1)*gap)/n; items.forEach((it,i)=>drawMono(ctx,it.src,bx,by+i*(ih+gap),cw,ih,it.mode,it.br)); }};
+      // Variante B: Band oben
+      const rh=Math.round(Math.min(bh*(bw>=bh?0.3:0.34), bw*(n>1?0.45:0.6)));
+      const top={box:[bx,by+rh+gap,bw,bh-rh-gap], draw:()=>{ const iw=(bw-(n-1)*gap)/n; items.forEach((it,i)=>drawMono(ctx,it.src,bx+i*(iw+gap),by,iw,rh,it.mode,it.br)); }};
+      const sc = L => contentScale(ctx, st, L.box, now);
+      const pick = sc(side) >= sc(top)*0.9 ? side : top;
+      pick.draw(); [bx,by,bw,bh]=pick.box;
+    }
+  }
 
   if(st.type==="text"){
     const t=st.text; border=t.border;
-    const raw=(t.text||"").split("\n").map(s=>s.trim()).filter(s=>s!=="");
-    const lines=raw.map((s,i)=>({t:s, w:(t.firstBig&&raw.length>1&&i===0)?1.6:1, b:t.bold}));
-    fitLines(ctx, lines, m, m, W-2*m, H-2*m, t.align);
-    toMono(canvas,"threshold");
-  }
-  else if(st.type==="food"){
+    fitLines(ctx, textLines(t), bx, by, bw, bh, t.align);
+  } else if(st.type==="food"){
     const f=st.food; border=f.border;
-    const made = f.made==="none" ? null : addDays(now, +f.made);
-    const until = addDays(made||now, +f.shelf||0);
-    // zwei Layouts probieren (Bezeichnung + Datum in einer Zeile oder getrennt) und das größere nehmen
-    const build = split => {
-      const L=[];
-      if(f.name) L.push({t:f.name, w:1.7, b:true});
-      const md = made ? fmtDate(made, f.time && f.made==="0") : null;
-      if(split){
-        if(md){ L.push({t:"Zubereitet:", w:0.85, b:false}); L.push({t:md, w:1, b:false}); }
-        L.push({t:f.shelfLbl+":", w:0.85, b:false}); L.push({t:fmtDate(until), w:1.3, b:true});
-      } else {
-        if(md) L.push({t:"Zubereitet: "+md, w:1, b:false});
-        L.push({t:f.shelfLbl+": "+fmtDate(until), w:1.15, b:true});
-      }
-      if(f.allergens.length) L.push({t:"Allergene: "+f.allergens.join(", "), w:0.9, b:false});
-      if(f.extra) L.push({t:f.extra, w:0.9, b:false});
-      return L;
-    };
-    const a=build(false), b=build(true);
-    const best = fitLines(ctx,b,m,m,W-2*m,H-2*m,"left",true) > fitLines(ctx,a,m,m,W-2*m,H-2*m,"left",true)*1.1 ? b : a;
-    fitLines(ctx, best, m, m, W-2*m, H-2*m, "left");
-    toMono(canvas,"threshold");
-  }
-  else if(st.type==="image"){
+    const [a,b]=foodLines(f, now);
+    const best = fitLines(ctx,b,bx,by,bw,bh,"left",true) > fitLines(ctx,a,bx,by,bw,bh,"left",true)*1.1 ? b : a;
+    fitLines(ctx, best, bx, by, bw, bh, "left");
+  } else if(st.type==="image"){
     const im=st.image;
-    const capH = im.caption ? Math.round((H-2*m)*(H>W?0.18:0.28)) : 0;
-    const boxW=W-2*m, boxH=H-2*m-(capH?capH+m/2:0);
-    const img = await loadImg(im.data);
-    if(img){
-      const tmp=document.createElement("canvas"); tmp.width=boxW; tmp.height=boxH;
-      const tc=tmp.getContext("2d"); tc.fillStyle="#fff"; tc.fillRect(0,0,boxW,boxH);
-      const s=Math.min(boxW/img.width, boxH/img.height);
-      const iw=img.width*s, ih=img.height*s;
-      tc.imageSmoothingQuality="high";
-      tc.drawImage(img,(boxW-iw)/2,(boxH-ih)/2,iw,ih);
-      toMono(tmp, im.mode, im.bright, im.contrast, im.invert);
-      ctx.drawImage(tmp,m,m);
-    } else {
-      ctx.fillStyle="#000"; ctx.font="400 "+Math.round(Math.min(W,H)/9)+"px "+FONT; ctx.textAlign="center"; ctx.textBaseline="middle";
-      ctx.fillText("Bild wählen", W/2, m+boxH/2); ctx.textAlign="left";
-    }
-    if(capH){
-      const tmp=document.createElement("canvas"); tmp.width=W; tmp.height=capH;
-      const tc=tmp.getContext("2d"); tc.fillStyle="#fff"; tc.fillRect(0,0,W,capH);
-      fitLines(tc,[{t:im.caption,w:1,b:true}], m, 0, W-2*m, capH, "center");
-      toMono(tmp,"threshold");
-      ctx.drawImage(tmp,0,H-m-capH);
-    }
+    const capH = im.caption ? Math.round(bh*(H>W?0.18:0.28)) : 0;
+    const boxH=bh-(capH?capH+m/2:0);
+    const img=await loadImg(im.data);
+    if(img) drawMono(ctx,img,bx,by,bw,boxH,im.mode,im.bright,im.contrast,im.invert);
+    else { ctx.fillStyle="#000"; ctx.font="400 "+Math.round(Math.min(W,H)/9)+"px "+FONT; ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.fillText("Bild wählen", W/2, by+boxH/2); ctx.textAlign="left"; }
+    if(capH) fitLines(ctx,[{t:im.caption,w:1,b:true}], bx, H-m-capH, bw, capH, "center");
   }
   if(border){ const lw=Math.max(2,Math.round(DPM*0.4)); ctx.strokeStyle="#000"; ctx.lineWidth=lw; const o=Math.round(m/2); ctx.strokeRect(o,o,W-2*o,H-2*o); }
+  toMono(lc,"threshold"); // Text glätten -> reines Schwarzweiß (Bilder sind schon s/w)
+
+  if(lc!==canvas){ // für den Druckkopf drehen
+    canvas.width=H; canvas.height=W; const c=canvas.getContext("2d");
+    if(settings.rotDir===90){ c.translate(H,0); c.rotate(Math.PI/2); } else { c.translate(0,W); c.rotate(-Math.PI/2); }
+    c.drawImage(lc,0,0);
+  }
   return canvas;
 }
 
 /* ---------- Bluetooth ---------- */
 const BT = { device:null, ch:null };
-function btSupported(){ return !!(navigator.bluetooth && navigator.bluetooth.requestDevice); }
-function setConnUI(){
-  const b=$("btConn"); const on=!!(BT.ch && BT.device && BT.device.gatt.connected);
-  b.classList.toggle("on", on); b.textContent = on ? "● "+(BT.device.name||"Verbunden") : "Drucker verbinden";
-}
 const U = n => "0000"+n+"-0000-1000-8000-00805f9b34fb";
 const SVC = [U("ff00"), U("fee7"), U("ae30"), U("18f0"), "49535343-fe7d-4ae5-8fa9-9fafd205e455", "e7810a71-73ae-499d-8c15-faa9aef0c3f2"];
-const NAME_PREFIXES = ["M110","M120","M220","M02","Mr.in","Q","P","T0","M1","M2","Phomemo"];
+const NAME_PREFIXES = ["Q199","M110","M120","M220","M02","Mr.in","Q","P","T0","M1","M2","Phomemo"];
+function btSupported(){ return !!(navigator.bluetooth && navigator.bluetooth.requestDevice); }
+function setConnUI(){ const b=$("btConn"); const on=!!(BT.ch && BT.device && BT.device.gatt.connected); b.classList.toggle("on", on); b.textContent = on ? "● "+(BT.device.name||"Verbunden") : "Drucker verbinden"; }
 function errText(e){ if(!e) return "unbekannt"; return [e.name, e.message, e.code].filter(x=>x!==undefined&&x!==""&&x!=="Error").join(" / ") || String(e); }
 function isCancel(e){ return e && (e.name==="NotFoundError" || /cancel|abgebrochen|chosen/i.test(e.message||"")); }
 async function pickDevice(){
-  // Variante 1: Liste aller Geräte (Chrome); Variante 2: gefiltert nach Namen/Diensten (für Bluefy)
   const opts = [
     { acceptAllDevices:true, optionalServices:SVC },
     { filters:[...NAME_PREFIXES.map(p=>({namePrefix:p})), {services:[U("ff00")]}], optionalServices:SVC },
     { filters:NAME_PREFIXES.map(p=>({namePrefix:p})), optionalServices:SVC }
   ];
   let last;
-  for(const o of opts){
-    try{ return await navigator.bluetooth.requestDevice(o); }
-    catch(e){ last=e; if(isCancel(e)) throw e; console.warn("requestDevice", errText(e)); }
-  }
+  for(const o of opts){ try{ return await navigator.bluetooth.requestDevice(o); } catch(e){ last=e; if(isCancel(e)) throw e; } }
   throw last;
 }
 async function findWriteChar(server){
   try{ const s=await server.getPrimaryService(U("ff00")); return await s.getCharacteristic(U("ff02")); }catch(e){}
-  // Kein Phomemo-Dienst: anderes Gerät -> trennen und melden
   let ids=[]; try{ ids=(await server.getPrimaryServices()).map(s=>s.uuid.replace(/^0000(\w{4})-0000-1000-8000-00805f9b34fb$/,"$1")); }catch(e){}
   try{ server.disconnect(); }catch(e){}
   const err=new Error("Dieses Gerät ist nicht der Drucker – bitte ein anderes aus der Liste wählen."+(ids.length?" (Dienste: "+ids.join(", ")+")":""));
@@ -462,10 +558,7 @@ async function connect(){
     step="Verbinden mit "+(dev.name||("Gerät "+String(dev.id||"").slice(0,8)));
     dev.addEventListener("gattserverdisconnected", ()=>{ BT.ch=null; setConnUI(); });
     let server, lastErr;
-    for(let i=0;i<3 && !server;i++){
-      try{ server = await dev.gatt.connect(); }
-      catch(e){ lastErr=e; toast("Verbindungsversuch "+(i+2)+" …", 1500); await sleep(1200); }
-    }
+    for(let i=0;i<3 && !server;i++){ try{ server = await dev.gatt.connect(); } catch(e){ lastErr=e; toast("Verbindungsversuch "+(i+2)+" …", 1500); await sleep(1200); } }
     if(!server) throw lastErr;
     step="Druckkanal";
     BT.ch = await findWriteChar(server);
@@ -486,22 +579,13 @@ async function send(bytes){
     if(settings.delay) await sleep(settings.delay);
   }
 }
-// Label-Canvas -> Druckauftrag (ESC/POS-Raster, wie M110-Original-App)
 function buildJob(canvas){
-  const lw=canvas.width, h=canvas.height;
-  const src=canvas.getContext("2d").getImageData(0,0,lw,h).data;
-  const bpl=HEAD/8;
-  const ras=new Uint8Array(bpl*h);
-  const off=Math.round((HEAD-lw)/2 + settings.offX*DPM);
-  for(let y=0;y<h;y++) for(let x=0;x<lw;x++){
-    const px=x+off; if(px<0||px>=HEAD) continue;
-    if(src[(y*lw+x)*4]<128) ras[y*bpl+(px>>3)] |= (0x80>>(px&7));
-  }
-  const head=[0x1b,0x4e,0x0d,settings.speed, 0x1b,0x4e,0x04,settings.dens, 0x1f,0x11,settings.media,
-              0x1d,0x76,0x30,0x00, bpl&0xff, bpl>>8, h&0xff, h>>8];
+  const lw=canvas.width, h=canvas.height, src=canvas.getContext("2d").getImageData(0,0,lw,h).data;
+  const bpl=HEAD/8, ras=new Uint8Array(bpl*h), off=Math.round((HEAD-lw)/2 + settings.offX*DPM);
+  for(let y=0;y<h;y++) for(let x=0;x<lw;x++){ const px=x+off; if(px<0||px>=HEAD) continue; if(src[(y*lw+x)*4]<128) ras[y*bpl+(px>>3)] |= (0x80>>(px&7)); }
+  const head=[0x1b,0x4e,0x0d,settings.speed, 0x1b,0x4e,0x04,settings.dens, 0x1f,0x11,settings.media, 0x1d,0x76,0x30,0x00, bpl&0xff, bpl>>8, h&0xff, h>>8];
   const foot=[0x1f,0xf0,0x05,0x00, 0x1f,0xf0,0x03,0x00];
-  const out=new Uint8Array(head.length+ras.length+foot.length);
-  out.set(head,0); out.set(ras,head.length); out.set(foot,head.length+ras.length);
+  const out=new Uint8Array(head.length+ras.length+foot.length); out.set(head,0); out.set(ras,head.length); out.set(foot,head.length+ras.length);
   return out;
 }
 let printing=false;
@@ -512,160 +596,217 @@ async function printState(st, qty){
   try{
     for(let i=0;i<qty;i++){
       toast(qty>1 ? `Drucke ${i+1} von ${qty} …` : "Drucke …", 60000);
-      const cv=await renderLabel(st, document.createElement("canvas"), new Date());
-      await send(buildJob(cv));
-      await sleep(900);
+      const cv=await renderLabel(st, document.createElement("canvas"), new Date(), true);
+      await send(buildJob(cv)); await sleep(900);
     }
     toast("Fertig ✓");
   }catch(e){ toast("Druckfehler: "+(e.message||e), 4500); }
   printing=false; $("btPrint").disabled=false;
 }
 
-/* ---------- UI: Tabs ---------- */
+/* ---------- Tabs ---------- */
 function showTab(t){
   document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on", b.dataset.tab===t));
   ["home","edit","settings"].forEach(x=>$("tab-"+x).classList.toggle("hide", x!==t));
   $("printBar").classList.toggle("hide", t!=="edit");
   if(t==="home") renderList();
-  if(t==="edit") redraw();
+  if(t==="edit"){ buildSymGrid(); redraw(); }
+  if(t==="settings"){ renderLogo(); renderMySyms(); }
 }
 $("tabs").addEventListener("click", e=>{ const b=e.target.closest("button"); if(b) showTab(b.dataset.tab); });
 $("btConn").addEventListener("click", connect);
 
-/* ---------- UI: Vorlagenliste ---------- */
+/* ---------- Vorlagenliste ---------- */
+function saveTemplates(){ return store.set("m110.templates",templates); }
 async function renderList(){
   const list=$("tplList"); list.innerHTML="";
   $("tplEmpty").classList.toggle("hide", templates.length>0);
   for(const t of templates){
     const el=document.createElement("div"); el.className="tpl";
-    const [w,h]=dims(t);
-    const typ={text:"Text",food:"Lebensmittel",image:"Bild"}[t.type];
-    el.innerHTML=`<div class="thumb"><canvas></canvas></div><div><div class="nm"></div><div class="sub">${typ} · ${w}×${h} mm</div></div>
+    const [w,h]=dims(t); const typ={text:"Text",food:"Lebensmittel",image:"Bild"}[t.type];
+    el.innerHTML=`<div class="thumb"><canvas></canvas></div><div><div class="nm"></div><div class="sub">${typ} · ${w}×${h} mm${t.rot?" · gedreht":""}</div></div>
       <div class="acts"><button class="btn main" data-a="print">Drucken</button><button class="btn ghost" data-a="edit">✎</button><button class="btn del" data-a="del">✕</button></div>`;
     el.querySelector(".nm").textContent=t.name;
     renderLabel(t, el.querySelector("canvas"));
     el.addEventListener("click", e=>{
-      const a=e.target.closest("button")?.dataset.a;
-      if(a==="print") openPrintDlg(t);
-      else if(a==="edit"){ S=JSON.parse(JSON.stringify(t)); loadEditor(); showTab("edit"); }
-      else if(a==="del"){ const b=e.target.closest("button");
-        if(b.dataset.sure){ templates=templates.filter(x=>x.id!==t.id); store.set("m110.templates",templates); renderList(); }
-        else { b.dataset.sure="1"; b.textContent="Löschen?"; setTimeout(()=>{ b.dataset.sure=""; b.textContent="✕"; },3000); } }
-      else if(!a) openPrintDlg(t);
+      const b=e.target.closest("button"); const a=b?.dataset.a;
+      if(a==="print"||!a) openPrintDlg(t);
+      else if(a==="edit"){ S=normalize(clone(t)); loadEditor(); showTab("edit"); }
+      else if(a==="del"){ if(b.dataset.sure){ templates=templates.filter(x=>x.id!==t.id); saveTemplates(); renderList(); } else { b.dataset.sure="1"; b.textContent="Löschen?"; setTimeout(()=>{ b.dataset.sure=""; b.textContent="✕"; },3000); } }
     });
     list.appendChild(el);
   }
 }
 let dpTpl=null, dpQty=1;
-function openPrintDlg(t){
-  dpTpl=t; dpQty=1; $("dpQty").textContent="1"; $("dpName").textContent=t.name;
-  renderLabel(t, $("dpCv"));
-  $("dlgPrint").showModal();
-}
+function openPrintDlg(t){ dpTpl=t; dpQty=1; $("dpQty").textContent="1"; $("dpName").textContent=t.name; renderLabel(t, $("dpCv")); $("dlgPrint").showModal(); }
 $("dpMinus").onclick=()=>{ dpQty=Math.max(1,dpQty-1); $("dpQty").textContent=dpQty; };
 $("dpPlus").onclick=()=>{ dpQty=Math.min(99,dpQty+1); $("dpQty").textContent=dpQty; };
 $("dpCancel").onclick=()=>$("dlgPrint").close();
 $("dpGo").onclick=()=>{ $("dlgPrint").close(); printState(dpTpl, dpQty); };
 
-/* ---------- UI: Editor ---------- */
+/* ---------- Editor ---------- */
 const ab=$("allerg");
 ALLERGENS.forEach(([k,n])=>{ const b=document.createElement("button"); b.dataset.v=k; b.innerHTML=`<b>${k}</b> ${n}`; ab.appendChild(b); });
-ab.addEventListener("click", e=>{ const b=e.target.closest("button"); if(!b) return; const k=b.dataset.v; const a=S.food.allergens;
-  const i=a.indexOf(k); if(i>=0) a.splice(i,1); else { a.push(k); a.sort((x,y)=>ALLERGENS.findIndex(q=>q[0]===x)-ALLERGENS.findIndex(q=>q[0]===y)); }
+ab.addEventListener("click", e=>{ const b=e.target.closest("button"); if(!b) return; const k=b.dataset.v, a=S.food.allergens, i=a.indexOf(k);
+  if(i>=0) a.splice(i,1); else { a.push(k); a.sort((x,y)=>ALLERGENS.findIndex(q=>q[0]===x)-ALLERGENS.findIndex(q=>q[0]===y)); }
   b.classList.toggle("on", a.includes(k)); redraw(); });
 
+async function symThumb(id, cv){
+  const src=await symbolSource(id); cv.width=cv.height=68; const c=cv.getContext("2d"); c.fillStyle="#fff"; c.fillRect(0,0,68,68);
+  if(src) drawMono(c, src, 2, 2, 64, 64, S.deco.symMode==="dither"?"dither":"silhouette");
+}
+function buildSymGrid(){
+  const g=$("symGrid"); g.innerHTML="";
+  const mk=(id,label,html)=>{ const b=document.createElement("button"); b.dataset.v=id||""; b.classList.toggle("on",(S.deco.symbol||"")===(id||""));
+    b.innerHTML=html||'<canvas></canvas>'; const sp=document.createElement("span"); sp.textContent=label; b.appendChild(sp); g.appendChild(b);
+    if(!html) symThumb(id,b.querySelector("canvas")); };
+  mk(null,"Keins",'<span style="font-size:22px">—</span>');
+  mySymbols.forEach(s=>mk("u:"+s.id, s.name));
+  EMOJI.forEach(([e,n])=>mk("e:"+e, n));
+  const add=document.createElement("button"); add.dataset.add="1"; add.innerHTML='<span class="add">＋</span><span>Eigenes</span>'; g.appendChild(add);
+  $("symStyle").classList.toggle("hide", !S.deco.symbol);
+}
+$("symGrid").addEventListener("click", e=>{ const b=e.target.closest("button"); if(!b) return;
+  if(b.dataset.add){ pendingSymFromEditor=true; $("symFile").click(); return; }
+  S.deco.symbol=b.dataset.v||null; [...$("symGrid").children].forEach(x=>x.classList.toggle("on",x===b)); $("symStyle").classList.toggle("hide", !S.deco.symbol); redraw(); });
+
 function loadEditor(){
-  setSeg("segType",S.type); setSeg("segSize",S.size); $("cW").value=S.cw; $("cH").value=S.ch;
+  setSeg("segType",S.type); setSeg("segSize",S.size); $("cW").value=S.cw; $("cH").value=S.ch; setSeg("segRot",S.rot?1:0);
   $("customSize").classList.toggle("hide", S.size!=="custom");
+  $("dLogo").checked=S.deco.logo; setSeg("segSymMode",S.deco.symMode);
   $("tText").value=S.text.text; setSeg("segAlign",S.text.align); $("tBold").checked=S.text.bold; $("tFirstBig").checked=S.text.firstBig; $("tBorder").checked=S.text.border;
-  $("fName").value=S.food.name; setSeg("segMade",S.food.made); setSeg("segShelf",S.food.shelf); $("fShelf").value=S.food.shelf; setSeg("segShelfLbl",S.food.shelfLbl);
-  [...ab.children].forEach(b=>b.classList.toggle("on", S.food.allergens.includes(b.dataset.v)));
-  $("fExtra").value=S.food.extra; $("fTime").checked=S.food.time; $("fBorder").checked=S.food.border;
+  const f=S.food; $("fName").value=f.name; $("fSub").value=f.sub; setSeg("segMadeLbl",f.madeLbl); setSeg("segMade",f.made); setSeg("segShelf",f.unit+f.shelf); $("fShelf").value=f.shelf; $("fUnit").value=f.unit; setSeg("segShelfLbl",f.shelfLbl);
+  [...ab.children].forEach(b=>b.classList.toggle("on", f.allergens.includes(b.dataset.v)));
+  $("fExtra").value=f.extra; $("fTime").checked=f.time; $("fBorder").checked=f.border;
   $("iBright").value=S.image.bright; $("iContrast").value=S.image.contrast; setSeg("segDither",S.image.mode); $("iInvert").checked=S.image.invert; $("iCaption").value=S.image.caption;
   $("tplName").value=S.name;
-  $("editInfo").textContent = S.id ? "Du bearbeitest eine gespeicherte Vorlage. „Speichern“ überschreibt sie." : "";
-  showFields();
+  $("editInfo").textContent = S.id ? "Du bearbeitest eine gespeicherte Vorlage. „Speichern“ überschreibt sie, „Als Kopie“ legt eine neue an." : "";
+  showFields(); buildSymGrid();
 }
-function showFields(){ $("fText").classList.toggle("hide",S.type!=="text"); $("fFood").classList.toggle("hide",S.type!=="food"); $("fImage").classList.toggle("hide",S.type!=="image"); }
+function showFields(){ ["text","food","image"].forEach(t=>$("f"+t[0].toUpperCase()+t.slice(1)).classList.toggle("hide",S.type!==t)); $("fDeco").classList.toggle("hide",S.type==="image"); $("noLogoHint").classList.toggle("hide", !!logoData); }
 
 let rq=0;
 async function redraw(){
   const my=++rq; const cv=document.createElement("canvas");
   await renderLabel(S, cv); if(my!==rq) return;
   const out=$("cv"); out.width=cv.width; out.height=cv.height; out.getContext("2d").drawImage(cv,0,0);
-  const [w,h]=dims(S);
-  out.style.width = Math.min(340, w*7)+"px";
-  $("meta").textContent = `${w} × ${h} mm · ${cv.width} × ${cv.height} Punkte`+(w>48?" · Druckbereich max. 48 mm breit":"");
+  const [w,h]=dims(S); const lw=S.rot?h:w, lh=S.rot?w:h;
+  out.style.width = Math.min(340, lw*6)+"px";
+  $("meta").textContent = `${lw} × ${lh} mm${S.rot?" (gedreht gedruckt)":""}`+(w>48?" · Druckbreite max. 48 mm":"");
 }
 
 seg("segType", v=>{ S.type=v; showFields(); redraw(); });
 seg("segSize", v=>{ S.size=v; $("customSize").classList.toggle("hide", v!=="custom"); redraw(); });
+seg("segRot", v=>{ S.rot=v==="1"; redraw(); });
 $("cW").oninput=()=>{ S.cw=+$("cW").value; redraw(); };
 $("cH").oninput=()=>{ S.ch=+$("cH").value; redraw(); };
+$("dLogo").onchange=()=>{ S.deco.logo=$("dLogo").checked; if(S.deco.logo&&!logoData) toast("Bitte zuerst unter Einstellungen ein Logo hochladen",3500); redraw(); };
+seg("segSymMode", v=>{ S.deco.symMode=v; buildSymGrid(); redraw(); });
 $("tText").oninput=()=>{ S.text.text=$("tText").value; redraw(); };
 seg("segAlign", v=>{ S.text.align=v; redraw(); });
 $("tBold").onchange=()=>{ S.text.bold=$("tBold").checked; redraw(); };
 $("tFirstBig").onchange=()=>{ S.text.firstBig=$("tFirstBig").checked; redraw(); };
 $("tBorder").onchange=()=>{ S.text.border=$("tBorder").checked; redraw(); };
 $("fName").oninput=()=>{ S.food.name=$("fName").value; redraw(); };
+$("fSub").oninput=()=>{ S.food.sub=$("fSub").value; redraw(); };
+seg("segMadeLbl", v=>{ S.food.madeLbl=v; redraw(); });
 seg("segMade", v=>{ S.food.made=v; redraw(); });
-seg("segShelf", v=>{ S.food.shelf=+v; $("fShelf").value=v; redraw(); });
-$("fShelf").oninput=()=>{ S.food.shelf=Math.max(0,+$("fShelf").value||0); setSeg("segShelf",S.food.shelf); redraw(); };
+seg("segShelf", v=>{ S.food.unit=v[0]; S.food.shelf=+v.slice(1); $("fShelf").value=S.food.shelf; $("fUnit").value=S.food.unit;
+  if(S.food.unit==="m" && S.food.shelfLbl==="Verbrauchen bis"){ S.food.shelfLbl="Mindestens haltbar bis"; setSeg("segShelfLbl",S.food.shelfLbl); }
+  redraw(); });
+const shelfInput=()=>{ S.food.shelf=Math.max(0,+$("fShelf").value||0); S.food.unit=$("fUnit").value; setSeg("segShelf",S.food.unit+S.food.shelf); redraw(); };
+$("fShelf").oninput=shelfInput; $("fUnit").onchange=shelfInput;
 seg("segShelfLbl", v=>{ S.food.shelfLbl=v; redraw(); });
 $("fExtra").oninput=()=>{ S.food.extra=$("fExtra").value; redraw(); };
 $("fTime").onchange=()=>{ S.food.time=$("fTime").checked; redraw(); };
 $("fBorder").onchange=()=>{ S.food.border=$("fBorder").checked; redraw(); };
+
+async function fileToData(file, max=640){
+  const url=URL.createObjectURL(file); const img=await new Promise(res=>{ const i=new Image(); i.onload=()=>res(i); i.onerror=()=>res(null); i.src=url; });
+  URL.revokeObjectURL(url); if(!img) return null;
+  const s=Math.min(1, max/Math.max(img.width,img.height)); const c=document.createElement("canvas"); c.width=Math.round(img.width*s); c.height=Math.round(img.height*s);
+  const x=c.getContext("2d"); x.fillStyle="#fff"; x.fillRect(0,0,c.width,c.height); x.drawImage(img,0,0,c.width,c.height);
+  return trim(c).toDataURL("image/png");
+}
 $("iPick").onclick=()=>$("iFile").click();
-$("iFile").onchange=async()=>{
-  const f=$("iFile").files[0]; if(!f) return;
-  const url=URL.createObjectURL(f); const img=await loadImg(url);
-  if(!img){ toast("Bild konnte nicht geladen werden"); return; }
-  // verkleinern, damit Vorlagen klein bleiben (max. 640 px)
-  const s=Math.min(1, 640/Math.max(img.width,img.height));
-  const c=document.createElement("canvas"); c.width=Math.round(img.width*s); c.height=Math.round(img.height*s);
-  const cx=c.getContext("2d"); cx.fillStyle="#fff"; cx.fillRect(0,0,c.width,c.height); cx.drawImage(img,0,0,c.width,c.height);
-  S.image.data=c.toDataURL("image/png"); URL.revokeObjectURL(url); $("iFile").value=""; redraw();
-};
+$("iFile").onchange=async()=>{ const f=$("iFile").files[0]; if(!f) return; const d=await fileToData(f); $("iFile").value=""; if(!d){ toast("Bild konnte nicht geladen werden"); return; } S.image.data=d; redraw(); };
 $("iBright").oninput=()=>{ S.image.bright=+$("iBright").value; redraw(); };
 $("iContrast").oninput=()=>{ S.image.contrast=+$("iContrast").value; redraw(); };
 seg("segDither", v=>{ S.image.mode=v; redraw(); });
 $("iInvert").onchange=()=>{ S.image.invert=$("iInvert").checked; redraw(); };
 $("iCaption").oninput=()=>{ S.image.caption=$("iCaption").value; redraw(); };
 
-$("btSave").onclick=()=>{
-  const name=$("tplName").value.trim() || (S.type==="food"?S.food.name: S.type==="text"? (S.text.text.split("\n")[0]||"Etikett") : (S.image.caption||"Bild"));
-  S.name=name;
-  if(!S.id){ S.id=Date.now().toString(36)+Math.random().toString(36).slice(2,6); templates.push(JSON.parse(JSON.stringify(S))); }
-  else { const i=templates.findIndex(t=>t.id===S.id); if(i>=0) templates[i]=JSON.parse(JSON.stringify(S)); else templates.push(JSON.parse(JSON.stringify(S))); }
-  if(store.set("m110.templates",templates)){ toast(`„${name}“ gespeichert`); loadEditor(); }
-};
+function autoName(){ return $("tplName").value.trim() || (S.type==="food"?S.food.name: S.type==="text"? (S.text.text.split("\n")[0]||"Etikett") : (S.image.caption||"Bild")); }
+function saveAs(copy){
+  S.name=autoName();
+  if(copy || !S.id){ S.id=uid(); templates.push(clone(S)); }
+  else { const i=templates.findIndex(t=>t.id===S.id); if(i>=0) templates[i]=clone(S); else templates.push(clone(S)); }
+  if(saveTemplates()){ toast(`„${S.name}“ gespeichert`); loadEditor(); }
+}
+$("btSave").onclick=()=>saveAs(false);
+$("btCopy").onclick=()=>{ if(!$("tplName").value.trim() || $("tplName").value.trim()===S.name) $("tplName").value=autoName()+" (Kopie)"; saveAs(true); };
 $("btNew").onclick=()=>{ S=defaultState(); loadEditor(); redraw(); };
 
 let qty=1;
 $("qMinus").onclick=()=>{ qty=Math.max(1,qty-1); $("qVal").textContent=qty; };
 $("qPlus").onclick=()=>{ qty=Math.min(99,qty+1); $("qVal").textContent=qty; };
-$("btPrint").onclick=()=>printState(JSON.parse(JSON.stringify(S)), qty);
+$("btPrint").onclick=()=>printState(clone(S), qty);
 
-/* ---------- UI: Einstellungen ---------- */
-function bindRange(id, key, vid, fmt){
-  const el=$(id); el.value=settings[key]; $(vid).textContent=fmt?fmt(settings[key]):settings[key];
-  el.oninput=()=>{ settings[key]=+el.value; $(vid).textContent=fmt?fmt(settings[key]):settings[key]; store.set("m110.settings",settings); };
+/* ---------- Eigene Symbole ---------- */
+let pendingSym=null, pendingSymFromEditor=false;
+$("mySymAdd").onclick=()=>{ pendingSymFromEditor=false; $("symFile").click(); };
+$("symFile").onchange=async()=>{ const f=$("symFile").files[0]; $("symFile").value=""; if(!f) return;
+  const d=await fileToData(f, 400); if(!d){ toast("Bild konnte nicht geladen werden"); return; }
+  pendingSym=d; $("symName").value=(f.name||"").replace(/\.[^.]+$/,"").slice(0,20); $("dlgSym").showModal(); };
+$("symCancel").onclick=()=>{ pendingSym=null; $("dlgSym").close(); };
+$("symOk").onclick=()=>{ if(!pendingSym) return; const s={id:uid(), name:$("symName").value.trim()||"Symbol", data:pendingSym};
+  mySymbols.push(s); store.set("m110.symbols",mySymbols); pendingSym=null; $("dlgSym").close(); renderMySyms();
+  if(pendingSymFromEditor){ S.deco.symbol="u:"+s.id; buildSymGrid(); redraw(); } toast("Symbol hinzugefügt"); };
+function renderMySyms(){
+  const box=$("mySyms"); box.innerHTML = mySymbols.length? "" : '<div class="small">Noch keine eigenen Symbole.</div>';
+  mySymbols.forEach(s=>{ const r=document.createElement("div"); r.className="mysym"; r.innerHTML='<canvas></canvas><span></span><button class="btn del sm">✕</button>';
+    r.querySelector("span").textContent=s.name;
+    loadImg(s.data).then(i=>{ const c=r.querySelector("canvas"); c.width=c.height=80; const x=c.getContext("2d"); x.fillStyle="#fff"; x.fillRect(0,0,80,80); drawMono(x,i,4,4,72,72,"silhouette"); });
+    const b=r.querySelector("button"); b.onclick=()=>{ if(b.dataset.sure){ mySymbols=mySymbols.filter(x=>x.id!==s.id); store.set("m110.symbols",mySymbols); renderMySyms(); } else { b.dataset.sure="1"; b.textContent="Löschen?"; setTimeout(()=>{b.dataset.sure="";b.textContent="✕";},3000); } };
+    box.appendChild(r); });
+}
+
+/* ---------- Logo ---------- */
+async function renderLogo(){
+  const c=$("logoCv"); $("logoNone").classList.toggle("hide", !!logoData); c.classList.toggle("hide", !logoData); $("logoDel").disabled=!logoData;
+  if(!logoData) return; const img=await loadImg(logoData);
+  const s=Math.min(300/img.width, 96/img.height, 1.5); c.width=Math.round(img.width*s)+8; c.height=Math.round(img.height*s)+8;
+  const x=c.getContext("2d"); x.fillStyle="#fff"; x.fillRect(0,0,c.width,c.height); drawMono(x,img,4,4,c.width-8,c.height-8,settings.logoMode,settings.logoBr);
+}
+$("logoPick").onclick=()=>$("logoFile").click();
+$("logoFile").onchange=async()=>{ const f=$("logoFile").files[0]; $("logoFile").value=""; if(!f) return; const d=await fileToData(f, 800); if(!d){ toast("Bild konnte nicht geladen werden"); return; }
+  logoData=d; if(store.set("m110.logo",logoData)) toast("Logo gespeichert"); renderLogo(); showFields(); };
+$("logoDel").onclick=()=>{ const b=$("logoDel"); if(b.dataset.sure){ logoData=null; store.set("m110.logo",null); renderLogo(); showFields(); b.dataset.sure=""; b.textContent="Entfernen"; } else { b.dataset.sure="1"; b.textContent="Wirklich?"; setTimeout(()=>{b.dataset.sure="";b.textContent="Entfernen";},3000); } };
+setSeg("segLogoMode",settings.logoMode); seg("segLogoMode", v=>{ settings.logoMode=v; store.set("m110.settings",settings); renderLogo(); });
+
+/* ---------- Einstellungen ---------- */
+function bindRange(id, key, vid, after){
+  const el=$(id); el.value=settings[key]; $(vid).textContent=settings[key];
+  el.oninput=()=>{ settings[key]=+el.value; $(vid).textContent=settings[key]; store.set("m110.settings",settings); after&&after(); };
 }
 bindRange("sDens","dens","vDens"); bindRange("sSpeed","speed","vSpeed"); bindRange("sOffX","offX","vOffX");
-bindRange("sChunk","chunk","vChunk"); bindRange("sDelay","delay","vDelay");
+bindRange("sChunk","chunk","vChunk"); bindRange("sDelay","delay","vDelay"); bindRange("sLogoBr","logoBr","vLogoBr", renderLogo);
 setSeg("segMedia",settings.media); seg("segMedia", v=>{ settings.media=+v; store.set("m110.settings",settings); });
+setSeg("segRotDir",settings.rotDir); seg("segRotDir", v=>{ settings.rotDir=+v; store.set("m110.settings",settings); });
 
 $("btExport").onclick=()=>{
-  const blob=new Blob([JSON.stringify({app:"m110-etikett",v:1,templates,settings},null,1)],{type:"application/json"});
+  const blob=new Blob([JSON.stringify({app:"m110-etikett",v:2,templates,settings,logo:logoData,symbols:mySymbols})],{type:"application/json"});
   const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="etikett-vorlagen.json"; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),2000);
 };
 $("btImport").onclick=()=>$("impFile").click();
 $("impFile").onchange=async()=>{
   try{
     const data=JSON.parse(await $("impFile").files[0].text());
-    const incoming=(data.templates||[]).filter(t=>t&&t.id&&t.type);
-    let n=0; for(const t of incoming){ const i=templates.findIndex(x=>x.id===t.id); if(i>=0) templates[i]=t; else templates.push(t); n++; }
-    store.set("m110.templates",templates); toast(n+" Vorlagen importiert"); renderList();
+    let n=0; for(const t of (data.templates||[]).filter(t=>t&&t.id&&t.type)){ const i=templates.findIndex(x=>x.id===t.id); if(i>=0) templates[i]=normalize(t); else templates.push(normalize(t)); n++; }
+    saveTemplates();
+    if(data.logo){ logoData=data.logo; store.set("m110.logo",logoData); }
+    for(const s of (data.symbols||[])){ if(!mySymbols.find(x=>x.id===s.id)) mySymbols.push(s); } store.set("m110.symbols",mySymbols);
+    toast(n+" Vorlagen importiert"); renderList();
   }catch(e){ toast("Datei konnte nicht gelesen werden"); }
   $("impFile").value="";
 };
@@ -674,15 +815,20 @@ $("impFile").onchange=async()=>{
 if(!btSupported()){
   const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform==="MacIntel" && navigator.maxTouchPoints>1);
   const n=$("noBt"); n.classList.remove("hide");
-  n.innerHTML = isIOS
-    ? "Safari kann leider nicht per Bluetooth drucken. Öffne diese Seite in der kostenlosen App <b>„Bluefy – Web BLE Browser“</b> aus dem App Store. Gestalten und Vorlagen speichern geht aber auch hier."
-    : "Dieser Browser unterstützt kein Bluetooth. Bitte <b>Chrome</b> oder <b>Edge</b> verwenden. Gestalten und Vorlagen speichern geht aber auch hier.";
+  n.innerHTML = isIOS ? "Hier kann nicht per Bluetooth gedruckt werden. Öffne diese Seite in der App <b>„Bluefy – Web BLE Browser“</b>. Gestalten und Vorlagen speichern geht aber auch hier."
+                      : "Dieser Browser unterstützt kein Bluetooth. Bitte <b>Chrome</b> oder <b>Edge</b> verwenden.";
 }
-if(!templates.length){
-  // Startvorlagen
-  const a=defaultState(); a.id="demo1"; a.name="Tomatensauce +3"; a.type="food"; a.food.allergens=["L"];
-  const b=defaultState(); b.id="demo2"; b.name="Jora (Text)"; b.size="50x20"; b.text.text="Restaurant Jora\nInnichen";
-  templates=[a,b]; store.set("m110.templates",templates);
+if(!store.get("m110.seeded2", false)){
+  const mk=(o)=>{ const s=defaultState(); s.id=uid(); return Object.assign(s, o); };
+  const a=mk({name:"Hirsch (Fleisch)", type:"food", size:"50x80", rot:true});
+  a.deco={logo:true, symbol:"e:🦌", symMode:"silhouette"}; Object.assign(a.food,{name:"Hirschrücken", sub:"Südtirol", madeLbl:"Verpackt", shelf:5, unit:"d", extra:"Gekühlt lagern (0–4 °C)"});
+  const b=mk({name:"Rind (Fleisch)", type:"food", size:"50x80", rot:true});
+  b.deco={logo:true, symbol:"e:🐮", symMode:"silhouette"}; Object.assign(b.food,{name:"Kalbsfilet", madeLbl:"Verpackt", shelf:4, unit:"d", extra:"Gekühlt lagern (0–4 °C)"});
+  const c=mk({name:"Marillenmarmelade", type:"food", size:"40x30"});
+  c.deco={logo:false, symbol:"e:🍑", symMode:"silhouette"}; Object.assign(c.food,{name:"Marillenmarmelade", madeLbl:"Abgefüllt", shelf:12, unit:"m", shelfLbl:"Mindestens haltbar bis"});
+  const d=mk({name:"Adresse (quer)", type:"text", size:"50x80", rot:true});
+  d.deco={logo:true, symbol:null, symMode:"silhouette"}; Object.assign(d.text,{text:"Vorname Nachname\nStraße Nr.\nPLZ Ort\nLand", align:"left", bold:false, firstBig:true});
+  templates.push(a,b,c,d); saveTemplates(); store.set("m110.seeded2", true);
 }
 loadEditor(); setConnUI(); showTab("home");
 </script>
