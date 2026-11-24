@@ -448,14 +448,11 @@ async function pickDevice(){
 }
 async function findWriteChar(server){
   try{ const s=await server.getPrimaryService(U("ff00")); return await s.getCharacteristic(U("ff02")); }catch(e){}
-  // Fallback: ersten beschreibbaren Kanal suchen
-  const svcs = await server.getPrimaryServices();
-  for(const s of svcs){
-    let chs=[]; try{ chs=await s.getCharacteristics(); }catch(e){ continue; }
-    const w = chs.find(c=>c.properties.writeWithoutResponse) || chs.find(c=>c.properties.write);
-    if(w) return w;
-  }
-  throw new Error("Kein Druckkanal gefunden");
+  // Kein Phomemo-Dienst: anderes Gerät -> trennen und melden
+  let ids=[]; try{ ids=(await server.getPrimaryServices()).map(s=>s.uuid.replace(/^0000(\w{4})-0000-1000-8000-00805f9b34fb$/,"$1")); }catch(e){}
+  try{ server.disconnect(); }catch(e){}
+  const err=new Error("Dieses Gerät ist nicht der Drucker – bitte ein anderes aus der Liste wählen."+(ids.length?" (Dienste: "+ids.join(", ")+")":""));
+  err.name="NotPrinter"; throw err;
 }
 async function connect(){
   if(!btSupported()){ toast("Dieser Browser kann kein Bluetooth – siehe Hinweis", 3500); showTab("home"); return false; }
@@ -469,7 +466,7 @@ async function connect(){
     BT.ch = await findWriteChar(server);
     BT.device = dev; setConnUI(); toast("Verbunden mit "+(dev.name||"Drucker"));
     return true;
-  }catch(e){ if(!isCancel(e)) toast("Fehler bei „"+step+"“: "+errText(e), 6000); setConnUI(); return false; }
+  }catch(e){ if(e&&e.name==="NotPrinter") toast(e.message, 7000); else if(!isCancel(e)) toast("Fehler bei „"+step+"“: "+errText(e), 6000); setConnUI(); return false; }
 }
 async function ensureConn(){
   if(BT.ch && BT.device && BT.device.gatt.connected) return true;
