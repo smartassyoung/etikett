@@ -274,7 +274,12 @@ dialog::backdrop{background:rgba(0,0,0,.35)}
         <div class="seg" id="segMedia">
           <button data-v="10" class="on">Etiketten mit Lücke</button><button data-v="11">Endlos</button><button data-v="38">Schwarze Markierung</button>
         </div>
-        <label>Horizontal verschieben: <b id="vOffX">0</b> mm</label>
+        <label>Position der Etikettenrolle im Drucker</label>
+        <div class="seg" id="segRoll">
+          <button data-v="left">Links</button><button data-v="center">Mitte</button><button data-v="right" class="on">Rechts</button>
+        </div>
+        <div class="small" style="margin-top:4px">Bei schmalen Rollen (z. B. 40 mm) wichtig. Rollen mit 50 mm füllen die ganze Breite.</div>
+        <label>Feinkorrektur horizontal: <b id="vOffX">0</b> mm</label>
         <input type="range" id="sOffX" min="-6" max="6" step="0.5" value="0">
         <label>Drehrichtung bei „Gedreht“</label>
         <div class="seg" id="segRotDir">
@@ -353,7 +358,7 @@ const store = {
   set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); return true; }catch(e){ toast("Speichern im Browser nicht möglich (Speicher voll?)",3500); return false; } }
 };
 let templates = store.get("m110.templates", []);
-let settings = Object.assign({dens:10, speed:3, media:10, offX:0, chunk:128, delay:20, rotDir:90, logoMode:"threshold", logoBr:0}, store.get("m110.settings", {}));
+let settings = Object.assign({dens:10, speed:3, media:10, offX:0, chunk:128, delay:20, rotDir:90, logoMode:"threshold", logoBr:0, roll:"right"}, store.get("m110.settings", {}));
 let logoData = store.get("m110.logo", null);
 let mySymbols = store.get("m110.symbols", []);
 
@@ -435,7 +440,7 @@ function toMono(canvas, mode, bright=0, contrast=0, invert=false){
     const a=d[i*4+3]/255; let v=(0.299*d[i*4]+0.587*d[i*4+1]+0.114*d[i*4+2])*a+255*(1-a);
     v=c*(v-128)+128+bright*1.28; if(invert) v=255-v; g[i]=v;
   }
-  const thr = mode==="silhouette" ? 235 : 128;
+  const thr = mode==="silhouette" ? 235 : mode==="line" ? 200 : 128;
   for(let yy=0;yy<H;yy++) for(let xx=0;xx<W;xx++){
     const i=yy*W+xx, o=g[i], n=o<thr?0:255, e=o-n; g[i]=n;
     if(mode==="dither"){ if(xx+1<W) g[i+1]+=e*7/16; if(yy+1<H){ if(xx>0) g[i+W-1]+=e*3/16; g[i+W]+=e*5/16; if(xx+1<W) g[i+W+1]+=e/16; } }
@@ -450,7 +455,7 @@ function drawMono(ctx, src, x, y, w, h, mode, bright=0, contrast=0, invert=false
   const s=Math.min(w/sw, h/sh), iw=Math.max(1,Math.round(sw*s)), ih=Math.max(1,Math.round(sh*s));
   const t=document.createElement("canvas"); t.width=iw; t.height=ih;
   const tc=t.getContext("2d"); tc.fillStyle="#fff"; tc.fillRect(0,0,iw,ih); tc.imageSmoothingQuality="high"; tc.drawImage(src,0,0,iw,ih);
-  toMono(t, mode, bright, contrast, invert);
+  toMono(t, mode==="threshold" ? "line" : mode, bright, contrast, invert);
   const dx = ax==="left" ? x : ax==="right" ? x+w-iw : x+(w-iw)/2;
   ctx.drawImage(t, Math.round(dx), Math.round(y+(h-ih)/2));
 }
@@ -601,7 +606,9 @@ async function send(bytes){
 }
 function buildJob(canvas){
   const lw=canvas.width, h=canvas.height, src=canvas.getContext("2d").getImageData(0,0,lw,h).data;
-  const bpl=HEAD/8, ras=new Uint8Array(bpl*h), off=Math.round((HEAD-lw)/2 + settings.offX*DPM);
+  const bpl=HEAD/8, ras=new Uint8Array(bpl*h);
+  const base = lw>=HEAD ? (HEAD-lw)/2 : settings.roll==="left" ? 0 : settings.roll==="center" ? (HEAD-lw)/2 : HEAD-lw;
+  const off=Math.round(base + settings.offX*DPM);
   for(let y=0;y<h;y++) for(let x=0;x<lw;x++){ const px=x+off; if(px<0||px>=HEAD) continue; if(src[(y*lw+x)*4]<128) ras[y*bpl+(px>>3)] |= (0x80>>(px&7)); }
   const head=[0x1b,0x4e,0x0d,settings.speed, 0x1b,0x4e,0x04,settings.dens, 0x1f,0x11,settings.media, 0x1d,0x76,0x30,0x00, bpl&0xff, bpl>>8, h&0xff, h>>8];
   const foot=[0x1f,0xf0,0x05,0x00, 0x1f,0xf0,0x03,0x00];
@@ -823,6 +830,7 @@ function bindRange(id, key, vid, after){
 bindRange("sDens","dens","vDens"); bindRange("sSpeed","speed","vSpeed"); bindRange("sOffX","offX","vOffX");
 bindRange("sChunk","chunk","vChunk"); bindRange("sDelay","delay","vDelay"); bindRange("sLogoBr","logoBr","vLogoBr", renderLogo);
 setSeg("segMedia",settings.media); seg("segMedia", v=>{ settings.media=+v; store.set("m110.settings",settings); });
+setSeg("segRoll",settings.roll); seg("segRoll", v=>{ settings.roll=v; store.set("m110.settings",settings); });
 setSeg("segRotDir",settings.rotDir); seg("segRotDir", v=>{ settings.rotDir=+v; store.set("m110.settings",settings); });
 
 $("btExport").onclick=()=>{
