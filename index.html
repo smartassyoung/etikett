@@ -139,6 +139,10 @@ dialog::backdrop{background:rgba(0,0,0,.35)}
               <button data-v="silhouette" class="on">Schattenriss</button><button data-v="dither">Mit Details</button>
             </div>
           </div>
+          <label>Anordnung</label>
+          <div class="seg" id="segLayout">
+            <button data-v="auto" class="on">Automatisch</button><button data-v="side">Seitlich</button><button data-v="top">Oben</button>
+          </div>
         </div>
 
         <div class="card" id="fText">
@@ -158,15 +162,25 @@ dialog::backdrop{background:rgba(0,0,0,.35)}
           <h2>Lebensmittel</h2>
           <label>Produkt</label>
           <input type="text" id="fName" value="Tomatensauce">
-          <label>Zweite Zeile (optional, z. B. Teilstück, Sorte)</label>
-          <input type="text" id="fSub" placeholder="z. B. Rücken · ca. 500 g">
-          <label>Datum 1</label>
+          <label class="chk"><input type="checkbox" id="fNameBold" checked> Produkt fett</label>
+          <label>Zweite Zeile (optional, z. B. Übersetzung, Teilstück)</label>
+          <input type="text" id="fSub" placeholder="z. B. Cetrioli sott'aceto">
+          <label class="chk"><input type="checkbox" id="fSubItalic"> Zweite Zeile kursiv</label>
+          <label>Textausrichtung</label>
+          <div class="seg" id="segFAlign">
+            <button data-v="left" class="on">Links</button><button data-v="center">Mitte</button>
+          </div>
+          <label>Datum 1 – Bezeichnung</label>
           <div class="seg" id="segMadeLbl">
-            <button data-v="Zubereitet" class="on">Zubereitet</button><button data-v="Abgefüllt">Abgefüllt</button><button data-v="Eingefroren">Eingefroren</button><button data-v="Verpackt">Verpackt</button>
+            <button data-v="Zubereitet" class="on">Zubereitet</button><button data-v="Abgefüllt">Abgefüllt</button><button data-v="Prod">Prod</button><button data-v="Eingefroren">Eingefroren</button><button data-v="Verpackt">Verpackt</button>
           </div>
-          <div class="seg" id="segMade" style="margin-top:6px">
-            <button data-v="0" class="on">Heute</button><button data-v="-1">Gestern</button><button data-v="none">Ausblenden</button>
+          <input type="text" id="fMadeLbl" placeholder="oder eigene Bezeichnung" style="margin-top:6px">
+          <label>Datum 1 – Tag</label>
+          <div class="seg" id="segMade">
+            <button data-v="0" class="on">Heute</button><button data-v="-1">Gestern</button><button data-v="fixed">Festes Datum</button><button data-v="none">Ausblenden</button>
           </div>
+          <input type="date" id="fFixed" class="hide" style="margin-top:6px;width:100%;font:inherit;font-size:17px;padding:10px 12px;border:1px solid var(--line);border-radius:10px">
+          <label class="chk"><input type="checkbox" id="fWeekday" checked> Wochentag anzeigen</label>
           <label>Datum 2 (ab Datum 1)</label>
           <div class="seg" id="segShelf">
             <button data-v="d1">+1 T</button><button data-v="d2">+2 T</button><button data-v="d3" class="on">+3 T</button><button data-v="d5">+5 T</button><button data-v="d7">+7 T</button>
@@ -348,7 +362,7 @@ const $ = id => document.getElementById(id);
 function toast(t, ms=2200){ const el=$("toast"); el.textContent=t; el.classList.add("show"); clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove("show"), ms); }
 function seg(id, onChange){ $(id).addEventListener("click", e=>{ const b=e.target.closest("button"); if(!b) return; setSeg(id,b.dataset.v); onChange && onChange(b.dataset.v); }); }
 function setSeg(id, v){ [...$(id).children].forEach(b=>b.classList.toggle("on", b.dataset.v==String(v))); }
-function fmtDate(d, time){ const s = WD[d.getDay()]+" "+String(d.getDate()).padStart(2,"0")+"."+String(d.getMonth()+1).padStart(2,"0")+"."+d.getFullYear(); return time ? s+" "+String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0") : s; }
+function fmtDate(d, time, wd=true){ const s = (wd?WD[d.getDay()]+" ":"")+String(d.getDate()).padStart(2,"0")+"."+String(d.getMonth()+1).padStart(2,"0")+"."+d.getFullYear(); return time ? s+" "+String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0") : s; }
 function addDays(d,n){ const x=new Date(d); x.setDate(x.getDate()+n); return x; }
 function addMonths(d,n){ const x=new Date(d); const day=x.getDate(); x.setDate(1); x.setMonth(x.getMonth()+n); const last=new Date(x.getFullYear(),x.getMonth()+1,0).getDate(); x.setDate(Math.min(day,last)); return x; }
 const sleep = ms => new Promise(r=>setTimeout(r,ms));
@@ -358,9 +372,9 @@ const uid = () => Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 /* ---------- Zustand ---------- */
 function defaultState(){
   return { id:null, name:"", type:"text", size:"40x30", cw:40, ch:30, rot:false,
-    deco:{ logo:false, symbol:null, symMode:"silhouette" },
+    deco:{ logo:false, symbol:null, symMode:"silhouette", layout:"auto" },
     text:{ text:"Jora", align:"center", bold:true, firstBig:true, border:false },
-    food:{ name:"Tomatensauce", sub:"", madeLbl:"Zubereitet", made:"0", shelf:3, unit:"d", shelfLbl:"Verbrauchen bis", allergens:[], extra:"", time:false, border:false },
+    food:{ name:"Tomatensauce", nameBold:true, sub:"", subItalic:false, align:"left", weekday:true, fixed:"", madeLbl:"Zubereitet", made:"0", shelf:3, unit:"d", shelfLbl:"Verbrauchen bis", allergens:[], extra:"", time:false, border:false },
     image:{ data:null, bright:0, contrast:20, mode:"dither", invert:false, caption:"" } };
 }
 function normalize(t){ // ältere Vorlagen ergänzen
@@ -398,14 +412,15 @@ function fitLines(ctx, lines, x, y, w, h, align, dry){
   lines = lines.filter(l=>l.t!=="");
   if(!lines.length || w<4 || h<4) return 0;
   const gap = 0.18; let lo=2, hi=400;
-  const ok = s => { let total=0; for(const l of lines){ const fs=s*l.w; ctx.font=(l.b?"700 ":"400 ")+fs+"px "+FONT; if(ctx.measureText(l.t).width>w) return false; total+=fs; } return total + s*gap*(lines.length-1) <= h; };
+  const fnt = (l,fs) => (l.i?"italic ":"")+(l.b?"700 ":"400 ")+fs+"px "+FONT;
+  const ok = s => { let total=0; for(const l of lines){ const fs=s*l.w; ctx.font=fnt(l,fs); if(ctx.measureText(l.t).width>w) return false; total+=fs; } return total + s*gap*(lines.length-1) <= h; };
   for(let i=0;i<22;i++){ const m=(lo+hi)/2; if(ok(m)) lo=m; else hi=m; }
   const s=lo; if(dry) return s;
   const total=lines.reduce((a,l)=>a+s*l.w,0)+s*gap*(lines.length-1);
   let cy = y + (h-total)/2;
   ctx.fillStyle="#000"; ctx.textBaseline="top";
   for(const l of lines){
-    const fs=s*l.w; ctx.font=(l.b?"700 ":"400 ")+fs+"px "+FONT;
+    const fs=s*l.w; ctx.font=fnt(l,fs);
     const tw=ctx.measureText(l.t).width;
     const tx = align==="left"? x : align==="right"? x+w-tw : x+(w-tw)/2;
     ctx.fillText(l.t, tx, cy + fs*0.06); cy += fs + s*gap;
@@ -429,31 +444,35 @@ function toMono(canvas, mode, bright=0, contrast=0, invert=false){
   ctx.putImageData(id,0,0);
 }
 // Quelle (Bild/Canvas) in Box einpassen und in Schwarzweiß umwandeln
-function drawMono(ctx, src, x, y, w, h, mode, bright=0, contrast=0, invert=false){
+function drawMono(ctx, src, x, y, w, h, mode, bright=0, contrast=0, invert=false, ax="center"){
   if(!src || w<2 || h<2) return;
   const sw=src.naturalWidth||src.width, sh=src.naturalHeight||src.height;
   const s=Math.min(w/sw, h/sh), iw=Math.max(1,Math.round(sw*s)), ih=Math.max(1,Math.round(sh*s));
   const t=document.createElement("canvas"); t.width=iw; t.height=ih;
   const tc=t.getContext("2d"); tc.fillStyle="#fff"; tc.fillRect(0,0,iw,ih); tc.imageSmoothingQuality="high"; tc.drawImage(src,0,0,iw,ih);
   toMono(t, mode, bright, contrast, invert);
-  ctx.drawImage(t, Math.round(x+(w-iw)/2), Math.round(y+(h-ih)/2));
+  const dx = ax==="left" ? x : ax==="right" ? x+w-iw : x+(w-iw)/2;
+  ctx.drawImage(t, Math.round(dx), Math.round(y+(h-ih)/2));
 }
 function foodLines(f, now){
-  const made = f.made==="none" ? null : addDays(now, +f.made);
+  let made = null;
+  if(f.made==="fixed" && f.fixed){ const [y,mo,d]=f.fixed.split("-").map(Number); made=new Date(y,mo-1,d); }
+  else if(f.made!=="none" && f.made!=="fixed") made=addDays(now, +f.made);
   const base = made||now; const n=+f.shelf||0;
   const until = f.unit==="m" ? addMonths(base,n) : addDays(base,n);
-  const md = made ? fmtDate(made, f.time && f.made==="0") : null;
+  const wd = f.weekday!==false;
+  const md = made ? fmtDate(made, f.time && f.made==="0", wd) : null;
   const sl = f.shelfLbl!=="none";
   const build = split => {
     const L=[];
-    if(f.name) L.push({t:f.name, w:1.7, b:true});
-    if(f.sub) L.push({t:f.sub, w:1.05, b:false});
+    if(f.name) L.push({t:f.name, w:1.7, b:f.nameBold!==false});
+    if(f.sub) L.push({t:f.sub, w:f.subItalic?1.15:1.05, b:false, i:!!f.subItalic});
     if(split){
       if(md){ L.push({t:f.madeLbl+":", w:0.85, b:false}); L.push({t:md, w:1, b:false}); }
-      if(sl){ L.push({t:f.shelfLbl+":", w:0.85, b:false}); L.push({t:fmtDate(until), w:1.3, b:true}); }
+      if(sl){ L.push({t:f.shelfLbl+":", w:0.85, b:false}); L.push({t:fmtDate(until,false,wd), w:1.3, b:true}); }
     } else {
-      if(md) L.push({t:f.madeLbl+": "+md, w:1, b:false});
-      if(sl) L.push({t:f.shelfLbl+": "+fmtDate(until), w:1.15, b:true});
+      if(md) L.push({t:f.madeLbl+": "+md, w:sl?1:0.85, b:false});
+      if(sl) L.push({t:f.shelfLbl+": "+fmtDate(until,false,wd), w:1.15, b:true});
     }
     if(f.allergens.length) L.push({t:"Allergene: "+f.allergens.join(", "), w:0.9, b:false});
     if(f.extra) L.push({t:f.extra, w:0.9, b:false});
@@ -489,9 +508,10 @@ async function renderLabel(st, canvas, now=new Date(), forPrint=false){
       const side={box:[bx+cw+gap,by,bw-cw-gap,bh], draw:()=>{ const ih=(bh-(n-1)*gap)/n; items.forEach((it,i)=>drawMono(ctx,it.src,bx,by+i*(ih+gap),cw,ih,it.mode,it.br)); }};
       // Variante B: Band oben
       const rh=Math.round(Math.min(bh*(bw>=bh?0.3:0.34), bw*(n>1?0.45:0.6)));
-      const top={box:[bx,by+rh+gap,bw,bh-rh-gap], draw:()=>{ const iw=(bw-(n-1)*gap)/n; items.forEach((it,i)=>drawMono(ctx,it.src,bx+i*(iw+gap),by,iw,rh,it.mode,it.br)); }};
+      const top={box:[bx,by+rh+gap,bw,bh-rh-gap], draw:()=>{ const iw=(bw-(n-1)*gap)/n; items.forEach((it,i)=>drawMono(ctx,it.src,bx+i*(iw+gap),by,iw,rh,it.mode,it.br,0,false, n>1?(i===0?"left":"right"):"center")); }};
       const sc = L => contentScale(ctx, st, L.box, now);
-      const pick = sc(side) >= sc(top)*0.9 ? side : top;
+      const lay = st.deco.layout||"auto";
+      const pick = lay==="side" ? side : lay==="top" ? top : (sc(side) >= sc(top)*0.9 ? side : top);
       pick.draw(); [bx,by,bw,bh]=pick.box;
     }
   }
@@ -503,7 +523,7 @@ async function renderLabel(st, canvas, now=new Date(), forPrint=false){
     const f=st.food; border=f.border;
     const [a,b]=foodLines(f, now);
     const best = fitLines(ctx,b,bx,by,bw,bh,"left",true) > fitLines(ctx,a,bx,by,bw,bh,"left",true)*1.1 ? b : a;
-    fitLines(ctx, best, bx, by, bw, bh, "left");
+    fitLines(ctx, best, bx, by, bw, bh, f.align||"left");
   } else if(st.type==="image"){
     const im=st.image;
     const capH = im.caption ? Math.round(bh*(H>W?0.18:0.28)) : 0;
@@ -675,7 +695,9 @@ function loadEditor(){
   $("customSize").classList.toggle("hide", S.size!=="custom");
   $("dLogo").checked=S.deco.logo; setSeg("segSymMode",S.deco.symMode);
   $("tText").value=S.text.text; setSeg("segAlign",S.text.align); $("tBold").checked=S.text.bold; $("tFirstBig").checked=S.text.firstBig; $("tBorder").checked=S.text.border;
-  const f=S.food; $("fName").value=f.name; $("fSub").value=f.sub; setSeg("segMadeLbl",f.madeLbl); setSeg("segMade",f.made); setSeg("segShelf",f.unit+f.shelf); $("fShelf").value=f.shelf; $("fUnit").value=f.unit; setSeg("segShelfLbl",f.shelfLbl);
+  setSeg("segLayout",S.deco.layout||"auto");
+  const f=S.food; $("fName").value=f.name; $("fNameBold").checked=f.nameBold!==false; $("fSub").value=f.sub; $("fSubItalic").checked=!!f.subItalic; setSeg("segFAlign",f.align||"left");
+  setSeg("segMadeLbl",f.madeLbl); $("fMadeLbl").value=f.madeLbl; setSeg("segMade",f.made); $("fFixed").value=f.fixed||""; $("fFixed").classList.toggle("hide",f.made!=="fixed"); $("fWeekday").checked=f.weekday!==false; setSeg("segShelf",f.unit+f.shelf); $("fShelf").value=f.shelf; $("fUnit").value=f.unit; setSeg("segShelfLbl",f.shelfLbl);
   [...ab.children].forEach(b=>b.classList.toggle("on", f.allergens.includes(b.dataset.v)));
   $("fExtra").value=f.extra; $("fTime").checked=f.time; $("fBorder").checked=f.border;
   $("iBright").value=S.image.bright; $("iContrast").value=S.image.contrast; setSeg("segDither",S.image.mode); $("iInvert").checked=S.image.invert; $("iCaption").value=S.image.caption;
@@ -709,8 +731,17 @@ $("tFirstBig").onchange=()=>{ S.text.firstBig=$("tFirstBig").checked; redraw(); 
 $("tBorder").onchange=()=>{ S.text.border=$("tBorder").checked; redraw(); };
 $("fName").oninput=()=>{ S.food.name=$("fName").value; redraw(); };
 $("fSub").oninput=()=>{ S.food.sub=$("fSub").value; redraw(); };
-seg("segMadeLbl", v=>{ S.food.madeLbl=v; redraw(); });
-seg("segMade", v=>{ S.food.made=v; redraw(); });
+seg("segMadeLbl", v=>{ S.food.madeLbl=v; $("fMadeLbl").value=v; redraw(); });
+$("fMadeLbl").oninput=()=>{ S.food.madeLbl=$("fMadeLbl").value; setSeg("segMadeLbl",S.food.madeLbl); redraw(); };
+seg("segMade", v=>{ S.food.made=v; $("fFixed").classList.toggle("hide",v!=="fixed");
+  if(v==="fixed" && !S.food.fixed){ const d=new Date(); S.food.fixed=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); $("fFixed").value=S.food.fixed; }
+  redraw(); });
+$("fFixed").onchange=()=>{ S.food.fixed=$("fFixed").value; redraw(); };
+$("fWeekday").onchange=()=>{ S.food.weekday=$("fWeekday").checked; redraw(); };
+$("fNameBold").onchange=()=>{ S.food.nameBold=$("fNameBold").checked; redraw(); };
+$("fSubItalic").onchange=()=>{ S.food.subItalic=$("fSubItalic").checked; redraw(); };
+seg("segFAlign", v=>{ S.food.align=v; redraw(); });
+seg("segLayout", v=>{ S.deco.layout=v; redraw(); });
 seg("segShelf", v=>{ S.food.unit=v[0]; S.food.shelf=+v.slice(1); $("fShelf").value=S.food.shelf; $("fUnit").value=S.food.unit;
   if(S.food.unit==="m" && S.food.shelfLbl==="Verbrauchen bis"){ S.food.shelfLbl="Mindestens haltbar bis"; setSeg("segShelfLbl",S.food.shelfLbl); }
   redraw(); });
@@ -829,6 +860,12 @@ if(!store.get("m110.seeded2", false)){
   const d=mk({name:"Adresse (quer)", type:"text", size:"50x80", rot:true});
   d.deco={logo:true, symbol:null, symMode:"silhouette"}; Object.assign(d.text,{text:"Vorname Nachname\nStraße Nr.\nPLZ Ort\nLand", align:"left", bold:false, firstBig:true});
   templates.push(a,b,c,d); saveTemplates(); store.set("m110.seeded2", true);
+}
+if(!store.get("m110.seeded3", false)){
+  const e=defaultState(); e.id=uid(); e.name="Essiggurken"; e.type="food"; e.size="40x30";
+  e.deco={logo:true, symbol:"e:🥒", symMode:"silhouette", layout:"top"};
+  Object.assign(e.food,{name:"Essiggurken", nameBold:false, sub:"Cetrioli sott'aceto", subItalic:true, align:"center", madeLbl:"Prod", made:"fixed", fixed:"2026-06-17", weekday:false, shelfLbl:"none", allergens:[]});
+  templates.unshift(e); saveTemplates(); store.set("m110.seeded3", true);
 }
 loadEditor(); setConnUI(); showTab("home");
 </script>
