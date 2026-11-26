@@ -255,6 +255,9 @@ dialog::backdrop{background:rgba(0,0,0,.35)}
         <div class="seg" id="segLogoMode">
           <button data-v="threshold" class="on">Grafik (scharf)</button><button data-v="dither">Foto (Raster)</button>
         </div>
+        <label>Linien verstärken: <b id="vLogoBold">1</b></label>
+        <input type="range" id="sLogoBold" min="0" max="3" step="1" value="1">
+        <div class="small">Die Vorschau zeigt das Logo in echter Druckgröße (ca. 20 mm breit), vergrößert.</div>
         <label>Helligkeit Logo: <b id="vLogoBr">0</b></label>
         <input type="range" id="sLogoBr" min="-100" max="100" value="0">
       </div>
@@ -358,7 +361,7 @@ const store = {
   set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); return true; }catch(e){ toast("Speichern im Browser nicht möglich (Speicher voll?)",3500); return false; } }
 };
 let templates = store.get("m110.templates", []);
-let settings = Object.assign({dens:10, speed:3, media:10, offX:0, chunk:128, delay:20, rotDir:90, logoMode:"threshold", logoBr:0, roll:"right"}, store.get("m110.settings", {}));
+let settings = Object.assign({dens:10, speed:3, media:10, offX:0, chunk:128, delay:20, rotDir:90, logoMode:"threshold", logoBr:0, logoBold:1, roll:"right"}, store.get("m110.settings", {}));
 let logoData = store.get("m110.logo", null);
 let mySymbols = store.get("m110.symbols", []);
 
@@ -440,7 +443,7 @@ function toMono(canvas, mode, bright=0, contrast=0, invert=false){
     const a=d[i*4+3]/255; let v=(0.299*d[i*4]+0.587*d[i*4+1]+0.114*d[i*4+2])*a+255*(1-a);
     v=c*(v-128)+128+bright*1.28; if(invert) v=255-v; g[i]=v;
   }
-  const thr = mode==="silhouette" ? 235 : mode==="line" ? 200 : 128;
+  const thr = mode==="silhouette" ? 235 : mode==="light" ? 225 : mode==="line" ? 200 : 128;
   for(let yy=0;yy<H;yy++) for(let xx=0;xx<W;xx++){
     const i=yy*W+xx, o=g[i], n=o<thr?0:255, e=o-n; g[i]=n;
     if(mode==="dither"){ if(xx+1<W) g[i+1]+=e*7/16; if(yy+1<H){ if(xx>0) g[i+W-1]+=e*3/16; g[i+W]+=e*5/16; if(xx+1<W) g[i+W+1]+=e/16; } }
@@ -449,8 +452,21 @@ function toMono(canvas, mode, bright=0, contrast=0, invert=false){
   ctx.putImageData(id,0,0);
 }
 // Quelle (Bild/Canvas) in Box einpassen und in Schwarzweiß umwandeln
-function drawMono(ctx, src, x, y, w, h, mode, bright=0, contrast=0, invert=false, ax="center"){
+function thicken(c, r){ if(!r) return; const W=c.width,H=c.height,x=c.getContext("2d"),id=x.getImageData(0,0,W,H),d=id.data,b=new Uint8Array(W*H);
+  for(let i=0;i<W*H;i++) b[i]=d[i*4]<128?1:0;
+  for(let yy=0;yy<H;yy++) for(let xx=0;xx<W;xx++){ if(b[yy*W+xx]) continue; let hit=0;
+    for(let dy=-r;dy<=r&&!hit;dy++) for(let dx=-r;dx<=r;dx++){ const X=xx+dx,Y=yy+dy; if(X>=0&&Y>=0&&X<W&&Y<H&&b[Y*W+X]&&dx*dx+dy*dy<=r*r+r){hit=1;break;} }
+    if(hit){ const i=(yy*W+xx)*4; d[i]=d[i+1]=d[i+2]=0; } }
+  x.putImageData(id,0,0); }
+function drawMono(ctx, src, x, y, w, h, mode, bright=0, contrast=0, invert=false, ax="center", bold=0){
   if(!src || w<2 || h<2) return;
+  if(bold && mode!=="dither"){ // feine Linien im Original verstärken, dann verkleinern
+    const ow=src.naturalWidth||src.width, oh=src.naturalHeight||src.height, k=Math.min(1, 900/Math.max(ow,oh));
+    const p=document.createElement("canvas"); p.width=Math.round(ow*k); p.height=Math.round(oh*k);
+    const pc=p.getContext("2d"); pc.fillStyle="#fff"; pc.fillRect(0,0,p.width,p.height); pc.drawImage(src,0,0,p.width,p.height);
+    toMono(p,"light",bright); const sc=Math.min(w/p.width,h/p.height);
+    thicken(p, Math.min(12, Math.round(bold*0.55/sc))); src=p; bright=0;
+  }
   const sw=src.naturalWidth||src.width, sh=src.naturalHeight||src.height;
   const s=Math.min(w/sw, h/sh), iw=Math.max(1,Math.round(sw*s)), ih=Math.max(1,Math.round(sh*s));
   const t=document.createElement("canvas"); t.width=iw; t.height=ih;
@@ -505,15 +521,15 @@ async function renderLabel(st, canvas, now=new Date(), forPrint=false){
   if(st.type!=="image"){
     const items=[];
     if(st.deco.symbol){ const s=await symbolSource(st.deco.symbol); if(s) items.push({src:s, mode:st.deco.symMode==="dither"?"dither":"silhouette", br:0}); }
-    if(st.deco.logo && logoData){ const l=await loadImg(logoData); if(l) items.push({src:l, mode:settings.logoMode, br:settings.logoBr}); }
+    if(st.deco.logo && logoData){ const l=await loadImg(logoData); if(l) items.push({src:l, mode:settings.logoMode, br:settings.logoBr, bold:settings.logoBold}); }
     if(items.length){
       const gap=Math.round(m*0.8), n=items.length;
       // Variante A: Spalte links
       const cw=Math.round(Math.min(bh*(n>1?0.62:0.85), bw*(n>1?0.36:0.32)));
-      const side={box:[bx+cw+gap,by,bw-cw-gap,bh], draw:()=>{ const ih=(bh-(n-1)*gap)/n; items.forEach((it,i)=>drawMono(ctx,it.src,bx,by+i*(ih+gap),cw,ih,it.mode,it.br)); }};
+      const side={box:[bx+cw+gap,by,bw-cw-gap,bh], draw:()=>{ const ih=(bh-(n-1)*gap)/n; items.forEach((it,i)=>drawMono(ctx,it.src,bx,by+i*(ih+gap),cw,ih,it.mode,it.br,0,false,"center",it.bold||0)); }};
       // Variante B: Band oben
       const rh=Math.round(Math.min(bh*(bw>=bh?0.3:0.34), bw*(n>1?0.45:0.6)));
-      const top={box:[bx,by+rh+gap,bw,bh-rh-gap], draw:()=>{ const iw=(bw-(n-1)*gap)/n; items.forEach((it,i)=>drawMono(ctx,it.src,bx+i*(iw+gap),by,iw,rh,it.mode,it.br,0,false, n>1?(i===0?"left":"right"):"center")); }};
+      const top={box:[bx,by+rh+gap,bw,bh-rh-gap], draw:()=>{ const iw=(bw-(n-1)*gap)/n; items.forEach((it,i)=>drawMono(ctx,it.src,bx+i*(iw+gap),by,iw,rh,it.mode,it.br,0,false, n>1?(i===0?"left":"right"):"center", it.bold||0)); }};
       const sc = L => contentScale(ctx, st, L.box, now);
       const lay = st.deco.layout||"auto";
       const pick = lay==="side" ? side : lay==="top" ? top : (sc(side) >= sc(top)*0.9 ? side : top);
@@ -813,8 +829,8 @@ function renderMySyms(){
 async function renderLogo(){
   const c=$("logoCv"); $("logoNone").classList.toggle("hide", !!logoData); c.classList.toggle("hide", !logoData); $("logoDel").disabled=!logoData;
   if(!logoData) return; const img=await loadImg(logoData);
-  const s=Math.min(300/img.width, 96/img.height, 1.5); c.width=Math.round(img.width*s)+8; c.height=Math.round(img.height*s)+8;
-  const x=c.getContext("2d"); x.fillStyle="#fff"; x.fillRect(0,0,c.width,c.height); drawMono(x,img,4,4,c.width-8,c.height-8,settings.logoMode,settings.logoBr);
+  const s=Math.min(160/img.width, 72/img.height); c.width=Math.round(img.width*s)+8; c.height=Math.round(img.height*s)+8; c.style.width=(c.width*2)+"px"; c.style.imageRendering="pixelated";
+  const x=c.getContext("2d"); x.fillStyle="#fff"; x.fillRect(0,0,c.width,c.height); drawMono(x,img,4,4,c.width-8,c.height-8,settings.logoMode,settings.logoBr,0,false,"center",settings.logoBold);
 }
 $("logoPick").onclick=()=>$("logoFile").click();
 $("logoFile").onchange=async()=>{ const f=$("logoFile").files[0]; $("logoFile").value=""; if(!f) return; const d=await fileToData(f, 800); if(!d){ toast("Bild konnte nicht geladen werden"); return; }
@@ -828,7 +844,7 @@ function bindRange(id, key, vid, after){
   el.oninput=()=>{ settings[key]=+el.value; $(vid).textContent=settings[key]; store.set("m110.settings",settings); after&&after(); };
 }
 bindRange("sDens","dens","vDens"); bindRange("sSpeed","speed","vSpeed"); bindRange("sOffX","offX","vOffX");
-bindRange("sChunk","chunk","vChunk"); bindRange("sDelay","delay","vDelay"); bindRange("sLogoBr","logoBr","vLogoBr", renderLogo);
+bindRange("sChunk","chunk","vChunk"); bindRange("sDelay","delay","vDelay"); bindRange("sLogoBr","logoBr","vLogoBr", renderLogo); bindRange("sLogoBold","logoBold","vLogoBold", renderLogo);
 setSeg("segMedia",settings.media); seg("segMedia", v=>{ settings.media=+v; store.set("m110.settings",settings); });
 setSeg("segRoll",settings.roll); seg("segRoll", v=>{ settings.roll=v; store.set("m110.settings",settings); });
 setSeg("segRotDir",settings.rotDir); seg("segRotDir", v=>{ settings.rotDir=+v; store.set("m110.settings",settings); });
