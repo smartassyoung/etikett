@@ -295,7 +295,8 @@ dialog::backdrop{background:rgba(0,0,0,.35)}
         <input type="range" id="sChunk" min="20" max="240" step="4" value="128">
         <label>Pause zwischen Paketen: <b id="vDelay">20</b> ms</label>
         <input type="range" id="sDelay" min="0" max="80" step="2" value="20">
-        <div class="small">Wenn Ausdrucke abgeschnitten oder verzerrt sind: Paketgröße kleiner, Pause größer.</div>
+        <label class="chk"><input type="checkbox" id="sSafe" checked> Sichere Übertragung (empfohlen)</label>
+        <div class="small">Der Drucker bestätigt jedes Paket – etwas langsamer, aber er bleibt nicht mehr bei „Übertragen“ hängen. Falls er trotzdem hängt: Paketgröße kleiner (z. B. 100) und Pause größer.</div>
       </div>
       <div class="card">
         <h2>Vorlagen sichern / übertragen</h2>
@@ -361,7 +362,7 @@ const store = {
   set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); return true; }catch(e){ toast("Speichern im Browser nicht möglich (Speicher voll?)",3500); return false; } }
 };
 let templates = store.get("m110.templates", []);
-let settings = Object.assign({dens:10, speed:3, media:10, offX:0, chunk:128, delay:20, rotDir:90, logoMode:"threshold", logoBr:0, logoBold:1, roll:"right"}, store.get("m110.settings", {}));
+let settings = Object.assign({dens:10, speed:3, media:10, offX:0, chunk:128, delay:20, rotDir:90, logoMode:"threshold", logoBr:0, logoBold:1, roll:"right", safe:true}, store.get("m110.settings", {}));
 let logoData = store.get("m110.logo", null);
 let mySymbols = store.get("m110.symbols", []);
 
@@ -612,12 +613,21 @@ async function ensureConn(){
   if(BT.device){ try{ const s=await BT.device.gatt.connect(); BT.ch=await findWriteChar(s); setConnUI(); return true; }catch(e){} }
   return connect();
 }
-async function send(bytes){
-  const ch=BT.ch, size=settings.chunk, noResp = ch.properties && ch.properties.writeWithoutResponse && ch.writeValueWithoutResponse;
+async function send(bytes, label=""){
+  const ch=BT.ch, size=settings.chunk, pr=ch.properties||{};
+  // Sicher: jedes Paket wird vom Drucker bestätigt (falls unterstützt)
+  const withResp = settings.safe && pr.write && (ch.writeValueWithResponse || ch.writeValue);
+  const noResp = !withResp && pr.writeWithoutResponse && ch.writeValueWithoutResponse;
+  let lastPct=-1;
   for(let i=0;i<bytes.length;i+=size){
     const part=bytes.slice(i,i+size);
-    if(noResp) await ch.writeValueWithoutResponse(part); else await ch.writeValue(part);
-    if(settings.delay) await sleep(settings.delay);
+    if(withResp) await (ch.writeValueWithResponse ? ch.writeValueWithResponse(part) : ch.writeValue(part));
+    else if(noResp) await ch.writeValueWithoutResponse(part);
+    else await ch.writeValue(part);
+    const delay = withResp ? Math.min(settings.delay,5) : Math.max(settings.delay, 25);
+    if(delay) await sleep(delay);
+    const pct=Math.floor((i+size)/bytes.length*100/10)*10;
+    if(pct!==lastPct){ lastPct=pct; toast(label+"Übertrage "+Math.min(100,pct)+" %", 60000); }
   }
 }
 function buildJob(canvas){
@@ -638,9 +648,8 @@ async function printState(st, qty){
   printing=true; $("btPrint").disabled=true;
   try{
     for(let i=0;i<qty;i++){
-      toast(qty>1 ? `Drucke ${i+1} von ${qty} …` : "Drucke …", 60000);
       const cv=await renderLabel(st, document.createElement("canvas"), new Date(), true);
-      await send(buildJob(cv)); await sleep(900);
+      await send(buildJob(cv), qty>1 ? `${i+1}/${qty} · ` : ""); await sleep(1200);
     }
     toast("Fertig ✓");
   }catch(e){ toast("Druckfehler: "+(e.message||e), 4500); }
@@ -846,6 +855,7 @@ function bindRange(id, key, vid, after){
 bindRange("sDens","dens","vDens"); bindRange("sSpeed","speed","vSpeed"); bindRange("sOffX","offX","vOffX");
 bindRange("sChunk","chunk","vChunk"); bindRange("sDelay","delay","vDelay"); bindRange("sLogoBr","logoBr","vLogoBr", renderLogo); bindRange("sLogoBold","logoBold","vLogoBold", renderLogo);
 setSeg("segMedia",settings.media); seg("segMedia", v=>{ settings.media=+v; store.set("m110.settings",settings); });
+$("sSafe").checked=settings.safe; $("sSafe").onchange=()=>{ settings.safe=$("sSafe").checked; store.set("m110.settings",settings); };
 setSeg("segRoll",settings.roll); seg("segRoll", v=>{ settings.roll=v; store.set("m110.settings",settings); });
 setSeg("segRotDir",settings.rotDir); seg("segRotDir", v=>{ settings.rotDir=+v; store.set("m110.settings",settings); });
 
